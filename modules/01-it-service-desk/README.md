@@ -43,11 +43,12 @@ To simulate high-pressure corporate help desk operations, four distinct incident
 
 ### 1. Incident Form & Dual-Logging (Work Notes & Customer Comments)
 *Demonstrates enterprise ticket formulation, automatic priority matrix calculation, private technician work notes, and external customer communication.*
-![Incident Form]<img width="959" height="455" alt="incident-form" src="https://github.com/user-attachments/assets/8e4d8678-15dd-4789-95a3-2caa5186835b" />
+<img width="959" height="455" alt="incident-form" src="https://github.com/user-attachments/assets/8e4d8678-15dd-4789-95a3-2caa5186835b" />
+
 
 ### 2. Active Enterprise Incident Queue
 *Displays the global service desk queue, organized by states, priorities, and assigned enterprise groups to prevent ticket backlogs[cite: 2].*
-![Queue View]<img width="959" height="317" alt="queue-view" src="https://github.com/user-attachments/assets/76709302-9b75-49e0-a769-9f77802ca7d8" />
+<img width="959" height="317" alt="queue-view" src="https://github.com/user-attachments/assets/76709302-9b75-49e0-a769-9f77802ca7d8" />
 
 ---
 
