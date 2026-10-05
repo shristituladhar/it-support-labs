@@ -1,7 +1,7 @@
 # Module 1: IT Service Desk & Incident Management (ServiceNow)
 
 ## Scenario
-All tickets are set in **Banksia Aged Care**, a fictional multi-site
+All tickets are simulated scenarios set in **Banksia Aged Care**, a fictional multi-site
 residential aged care provider (Main, Northside and Eastwood sites)
 operating 24/7. System downtime directly affects resident care
 documentation, which shapes priority and communication decisions
@@ -150,7 +150,7 @@ Internet" while other PCs on the floor were fine.
 
 I turned the fix into a knowledge article so staff or the next
 technician can resolve it without a call. It went into the review
-workflow before  getting published:
+workflow before getting published:
 
 ![Knowledge article](images/11-knowledge-article.jpg)
 
@@ -175,7 +175,7 @@ incident.
 ![Catalog request](images/13-catalog-request.jpg)
 
 *The catalog has no monitor stand item, so the closest hardware item
-was used to demonstrate the request process.*
+was ordered to demonstrate the request process.*
 
 ---
 
