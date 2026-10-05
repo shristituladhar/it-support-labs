@@ -150,7 +150,7 @@ Internet" while other PCs on the floor were fine.
 
 I turned the fix into a knowledge article so staff or the next
 technician can resolve it without a call. It went into the review
-workflow after publishing:
+workflow before  getting published:
 
 ![Knowledge article](images/11-knowledge-article.jpg)
 
