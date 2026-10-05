@@ -166,8 +166,9 @@ incident.
   not an incident (nothing was broken or interrupted)
 - Cancelled the incident with a note explaining why, and let the user
   know where their request had gone
-- Raised it through the Service Catalog on the user's behalf, linking
-  back to the original incident
+- Raised it through the Service Catalog on the user's behalf, noting
+  the original incident number (INC0010020) in the request for
+  traceability
 
 ![Incident cancelled](images/12-incident-cancelled.jpg)
 
