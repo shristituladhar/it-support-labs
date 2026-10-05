@@ -120,7 +120,6 @@ than the facility-wide outage in Ticket A.
 
 ![New starter form](images/07-new-starter-form.jpg)
 
-![New starter form](images/07-new-starter-form.jpg)
 
 The user's reply from the self-service portal:
 
