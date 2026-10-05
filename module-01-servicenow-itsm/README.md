@@ -79,7 +79,13 @@ update, with both site reports linked as child incidents:
 
 SLA tracking on the P1:
 
+SLA tracking on the P1:
+
 ![Task SLAs](images/04-task-slas.jpg)
+
+> **Note on SLAs:** The 15-minute P1 response SLA breached while I was
+> linking the site reports. In a live P1, the first update to staff
+> should go out before tidying up duplicates.
 
 Full timeline, including the escalation to Clinical Applications:
 
@@ -88,10 +94,6 @@ Full timeline, including the escalation to Clinical Applications:
 Resolving the parent automatically resolved both child incidents:
 
 ![Child incidents resolved](images/06-children-resolved.jpg)
-
-> **Note on SLAs:** The 15-minute P1 response SLA breached while I was
-> linking the site reports. In a live P1, the first update to staff
-> should go out before tidying up duplicates.
 
 ---
 
