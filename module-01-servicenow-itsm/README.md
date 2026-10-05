@@ -17,7 +17,7 @@ throughout.
 ## Key terms
 | Term | What it means |
 |---|---|
-| **Incident** | Unplanned interruption to a service or reduction in quality of service (e.g. an app is down, email service not working) |
+| **Incident** | Unplanned interruption to a service or reduction in quality of service (e.g. an app is down) |
 | **Service request** | A request for something new, like equipment or access – nothing is broken |
 | **Impact** | How many people are affected |
 | **Urgency** | How quickly it needs to be fixed |
