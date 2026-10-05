@@ -1,8 +1,6 @@
 # Module 2: End User Device Support
 
-All tickets are **simulated scenarios** set in **Banksia Aged Care**, a fictional aged care provider.
-The ServiceNow tickets and the Windows work are real; the calls and fault stories are role-played.
-In a real workplace I'd connect to the user's PC with a remote tool such as TeamViewer; here I worked directly in the VM.
+All tickets are **simulated scenarios** set in **Banksia Aged Care**, a fictional aged care provider. The ServiceNow tickets and the Windows work are real; the calls and fault stories are role-played. In a real workplace I'd connect to the user's PC with a remote tool such as TeamViewer; here I worked directly in the VM.
 
 ## Environment
 
@@ -14,7 +12,12 @@ In a real workplace I'd connect to the user's PC with a remote tool such as Team
 | Virtual PC | BANKSIA-PC01: 2 CPUs, 5 GB RAM, 64 GB disk, virtual TPM, NAT network |
 | Ticketing | ServiceNow Personal Developer Instance (see Module 1) |
 
+VM files are stored outside OneDrive, because syncing a running virtual disk can corrupt it.
+
 ## Setup: building BANKSIA-PC01
+
+Installed Windows 11 from an ISO with a **local account** (work PCs don't use personal Microsoft accounts), ran Windows Update until up to date, then took a **snapshot** so I could return to a clean PC after breaking things on purpose.
+
 VM hardware: 2 CPUs, 5 GB RAM, 64 GB disk and a virtual TPM (required by Windows 11).
 
 ![VM settings](images/01-vm-settings.jpg)
@@ -35,6 +38,15 @@ Snapshot of the clean, updated PC, used as a restore point before breaking thing
 
 ![Snapshot](images/05-snapshot.jpg)
 
+**Setup problems and fixes**
+
+| Problem | Fix |
+|---|---|
+| VirtualBox (my first hypervisor): black screen at first boot | Changed the Graphics Controller to VMSVGA; boot text then appeared |
+| VirtualBox: "failed to boot, no bootable option" | I had missed the "Press any key" prompt; mounted the ISO from the dialog and retried |
+| VirtualBox: screen would not resize after repeated Guest Additions installs | Switched to VMware Workstation, where VMware Tools sized the screen |
+| VMware: "Could not create anonymous paging file for 6144 MB" | Not enough free host memory; reduced the VM from 6 GB to 5 GB |
+
 ## Part 1: Add a data drive
 
 **Why:** In real workplaces, user data is often kept on a separate drive from Windows. If Windows breaks and the PC has to be rebuilt, the data drive survives. Adding and preparing a new drive is also a routine upgrade task when a PC runs low on storage. In this lab, the Data drive is also the backup destination used in Part 4.
@@ -43,6 +55,8 @@ Snapshot of the clean, updated PC, used as a restore point before breaking thing
 - **Initialised it as GPT**: a new disk is blank, and Windows has to prepare it before use. GPT is the modern partition style used on current PCs (MBR is the older one).
 - **Created a volume and formatted it NTFS** (label Data): NTFS is the standard Windows file system, supporting permissions and large files.
 - **Assigned a drive letter**: it took E: because D: is the DVD drive.
+
+Disk Management showing the original Windows disk (Disk 0) and the new Data drive (Disk 1, E:).
 
 ![New data drive](images/06-new-data-drive.jpg)
 
@@ -54,8 +68,16 @@ Snapshot of the clean, updated PC, used as a restore point before breaking thing
 
 **What I did:** I simulated a stuck program using two PowerShell loops (`while($true){}`), commands that run forever and keep the processor busy, like a frozen app would. In Task Manager, sorted by CPU, total CPU was 99% with two PowerShell processes at about 46% each. I ended both and CPU dropped to 8%. I added a work note and a plain-English comment to the caller, then resolved the ticket.
 
+Task Manager sorted by CPU: total usage at 99%, with two PowerShell processes using about 46% each.
+
 ![Diagnosis](images/07-slow-diagnosis.jpg)
+
+After ending both processes, CPU usage dropped back to 8%.
+
 ![After ending the processes](images/08-slow-fixed.jpg)
+
+Ticket timeline: internal work note, plain-English update to the caller, and resolution.
+
 ![Ticket](images/09-ticket-slow.jpg)
 
 **Real-world note:** a hung process is only one cause. The same check in Task Manager also shows high memory use (too many apps open or not enough RAM) or high disk use (updates, scans or a failing drive), each with a different fix.
@@ -76,7 +98,12 @@ Snapshot of the clean, updated PC, used as a restore point before breaking thing
 
 This is consistent with a sudden loss of power rather than a normal restart. In a real case I'd also check for crash events and the physical power connection. The ticket recommends checking the power connection and using a UPS for clinical workstations.
 
+System log filtered to Event IDs 41, 6008 and 1074: two unexpected shutdowns and one planned restart.
+
 ![Event Viewer](images/10-event-viewer.jpg)
+
+Ticket with the findings and recommendations (check the power connection, UPS for clinical workstations).
+
 ![Ticket](images/11-ticket-shutdowns.jpg)
 
 ## Part 4: Restore a deleted file (INC0010025)
@@ -87,11 +114,16 @@ This is consistent with a sudden loss of power rather than a normal restart. In 
 
 **What I did:** File History would not accept the second virtual disk ("Reconnect your drive"), so I used **Backup and Restore (Windows 7)** instead. My first run included a system image and failed for lack of space on the 20 GB drive. I unticked it and backed up Documents only. Then I deleted `Staff-roster.txt`, emptied the Recycle Bin and restored it from the backup.
 
+Backup of Documents to the Data drive (E:) completed successfully.
+
 ![Backup complete](images/12-backup-complete.jpg)
 
-*Staff-roster.txt after restoring from the backup on the Data drive. The file had been deleted and the Recycle Bin emptied beforehand.*
+Staff-roster.txt after restoring from the backup. The file had been deleted and the Recycle Bin emptied beforehand.
 
 ![File restored](images/13-file-restored.jpg)
+
+Ticket closed with the restore confirmed.
+
 ![Ticket](images/14-ticket-restore.jpg)
 
 **Real-world note:** a backup on a drive inside the same PC doesn't protect against theft, fire or ransomware. Real backups follow the **3-2-1 rule** (3 copies, 2 types of storage, 1 off-site) and are usually run centrally, for example with OneDrive or SharePoint for user files. This lab shows the idea at small scale.
