@@ -79,8 +79,6 @@ update, with both site reports linked as child incidents:
 
 SLA tracking on the P1:
 
-SLA tracking on the P1:
-
 ![Task SLAs](images/04-task-slas.jpg)
 
 > **Note on SLAs:** The 15-minute P1 response SLA breached while I was
