@@ -1,11 +1,11 @@
 # Module 1: IT Service Desk & Incident Management (ServiceNow)
 
 ## Scenario
-All tickets are simulated scenarios set in **Banksia Aged Care**, a fictional multi-site
-residential aged care provider (Main, Northside and Eastwood sites)
-operating 24/7. System downtime directly affects resident care
-documentation, which shapes priority and communication decisions
-throughout.
+All tickets are simulated scenarios set in **Banksia Aged Care**, a
+fictional multi-site residential aged care provider (Main, Northside
+and Eastwood sites) operating 24/7. System downtime directly affects
+resident care documentation, which shapes priority and communication
+decisions throughout.
 
 ## Environment
 - Platform: ServiceNow Personal Developer Instance
@@ -29,7 +29,6 @@ throughout.
 | **Work notes** | Internal notes only IT staff can see |
 | **Additional comments** | Updates the user can see |
 | **Knowledge article** | A written fix others can follow next time |
-
 
 ## Summary of work
 | Ticket | Scenario | Priority | Outcome |
@@ -55,8 +54,7 @@ it's needed) using this lookup table:
 
 **Situation:** At 10:40pm the RN in charge at Main site called the
 after-hours IT line: the care documentation app (CareNotes) was
-showing an error for every user. Night shift could not record
-resident care.
+showing an error for every user. Staff could not record resident care.
 
 **Actions:**
 - Logged with Impact High / Urgency High, giving Priority 1 - Critical
@@ -70,14 +68,17 @@ resident care.
 - Placed on hold awaiting the vendor, then confirmed the fix with
   staff at two sites before resolving
 
+High impact (all staff across three sites) and high urgency (staff
+can't record care) calculate automatically to 1 - Critical.
+
 ![P1 incident form](images/02-p1-form.jpg)
 
 Internal work note (yellow) kept separate from the customer-visible
-update, with both site reports linked as child incidents:
+update, with both site reports linked as child incidents.
 
 ![Work note vs comment and child incidents](images/03-comment-and-child-incident.jpg)
 
-SLA tracking on the P1:
+SLA tracking on the P1: response and resolution timers.
 
 ![Task SLAs](images/04-task-slas.jpg)
 
@@ -85,11 +86,12 @@ SLA tracking on the P1:
 > linking the site reports. In a live P1, the first update to staff
 > should go out before tidying up duplicates.
 
-Full timeline, including the escalation to Clinical Applications:
+Full timeline, including the escalation from Service Desk to Clinical
+Applications, the vendor hold and the resolution.
 
 ![P1 activity](images/05-p1-activity.jpg)
 
-Resolving the parent automatically resolved both child incidents:
+Resolving the parent automatically resolved both child incidents.
 
 ![Child incidents resolved](images/06-children-resolved.jpg)
 
@@ -97,8 +99,8 @@ Resolving the parent automatically resolved both child incidents:
 
 ## Ticket B – New starter can't log in on first shift (P3)
 
-**Situation:** A new RN starting their first night shift couldn't log
-in to the PC or CareNotes. Error: account disabled.
+**Situation:** A new RN starting their first shift couldn't log in to
+the PC or CareNotes. Error: account disabled.
 
 **Actions:**
 - Set Impact Low (one person) / Urgency High (on shift now), giving
@@ -113,20 +115,19 @@ in to the PC or CareNotes. Error: account disabled.
   person rather than writing it in the ticket
 - Placed on hold awaiting the user's confirmation, which the user
   provided through the self-service portal
-  
+
 Impact, Urgency and Priority are outlined in red: one urgent user
 (Impact Low, Urgency High) still calculates to 3 - Moderate, lower
 than the facility-wide outage in Ticket A.
 
 ![New starter form](images/07-new-starter-form.jpg)
 
-
-The user's reply from the self-service portal:
+The user's reply from the self-service portal, seen from the user's side.
 
 ![User portal reply](images/08-user-portal-reply.jpg)
 
-
-Full Activity Timeline:
+Full timeline: identity check, account fix, on hold awaiting the user,
+the user's confirmation, and resolution.
 
 ![New starter activity](images/09-new-starter-activity.jpg)
 
@@ -146,11 +147,14 @@ Internet" while other PCs on the floor were fine.
   reseating it, `ipconfig /release` and `/renew` gave a valid address
 - Connected via TeamViewer to confirm internet and CareNotes working
 
+Ticket timeline: phone troubleshooting steps in the work note, a
+friendly update to staff, and resolution notes.
+
 ![Network ticket activity](images/10-network-activity.jpg)
 
 I turned the fix into a knowledge article so staff or the next
 technician can resolve it without a call. It went into the review
-workflow before getting published:
+workflow before being published.
 
 ![Knowledge article](images/11-knowledge-article.jpg)
 
@@ -170,7 +174,13 @@ incident.
   the original incident number (INC0010020) in the request for
   traceability
 
+The incident cancelled with a work note explaining why, and a comment
+telling the user where their request went.
+
 ![Incident cancelled](images/12-incident-cancelled.jpg)
+
+The catalog request raised for the user (REQ0010001), referencing the
+original incident number, with the requested item listed below.
 
 ![Catalog request](images/13-catalog-request.jpg)
 
@@ -180,6 +190,8 @@ was ordered to demonstrate the request process.*
 ---
 
 ## Queue overview
+
+All lab tickets in one view: priority, state and assignment group for each.
 
 ![Incident queue](images/14-queue.jpg)
 
