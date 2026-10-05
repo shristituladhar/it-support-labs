@@ -14,26 +14,26 @@ In a real workplace I'd connect to the user's PC with a remote tool such as Team
 | Virtual PC | BANKSIA-PC01: 2 CPUs, 5 GB RAM, 64 GB disk, virtual TPM, NAT network |
 | Ticketing | ServiceNow Personal Developer Instance (see Module 1) |
 
-VM files are stored outside OneDrive, because syncing a running virtual disk can corrupt it.
-
 ## Setup: building BANKSIA-PC01
-
-Installed Windows 11 from an ISO with a **local account** (work PCs don't use personal Microsoft accounts), ran Windows Update until up to date, then took a **snapshot** so I could return to a clean PC after breaking things on purpose.
+VM hardware: 2 CPUs, 5 GB RAM, 64 GB disk and a virtual TPM (required by Windows 11).
 
 ![VM settings](images/01-vm-settings.jpg)
+
+Installing onto the empty virtual disk (Disk 0, unallocated). The laptop's own drive isn't touched.
+
 ![Choosing the install disk](images/02-install-disk.jpg)
+
+`winver` confirms the installed edition and build.
+
 ![Windows version](images/03-windows-installed.jpg)
+
+Windows Update run until up to date, so the PC is patched before any other work.
+
 ![Windows Update complete](images/04-windows-update.jpg)
+
+Snapshot of the clean, updated PC, used as a restore point before breaking things on purpose.
+
 ![Snapshot](images/05-snapshot.jpg)
-
-**Setup problems and fixes**
-
-| Problem | Fix |
-|---|---|
-| VirtualBox (my first hypervisor): black screen at first boot | Changed the Graphics Controller to VMSVGA; boot text then appeared |
-| VirtualBox: "failed to boot, no bootable option" | I had missed the "Press any key" prompt; mounted the ISO from the dialog and retried |
-| VirtualBox: screen would not resize after repeated Guest Additions installs | Switched to VMware Workstation, where VMware Tools sized the screen |
-| VMware: "Could not create anonymous paging file for 6144 MB" | Not enough free host memory; reduced the VM from 6 GB to 5 GB |
 
 ## Part 1: Add a data drive
 
