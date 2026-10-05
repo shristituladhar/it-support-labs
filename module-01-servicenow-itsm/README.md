@@ -125,6 +125,9 @@ The user's reply from the self-service portal:
 
 ![User portal reply](images/08-user-portal-reply.jpg)
 
+
+Full Activity Timeline:
+
 ![New starter activity](images/09-new-starter-activity.jpg)
 
 ---
