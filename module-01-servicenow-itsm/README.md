@@ -113,6 +113,12 @@ in to the PC or CareNotes. Error: account disabled.
   person rather than writing it in the ticket
 - Placed on hold awaiting the user's confirmation, which the user
   provided through the self-service portal
+  
+Impact, Urgency and Priority are outlined in red: one urgent user
+(Impact Low, Urgency High) still calculates to 3 - Moderate, lower
+than the facility-wide outage in Ticket A.
+
+![New starter form](images/07-new-starter-form.jpg)
 
 ![New starter form](images/07-new-starter-form.jpg)
 
