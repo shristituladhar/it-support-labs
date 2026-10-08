@@ -66,15 +66,17 @@ PC01 successfully joined to banksia.local.
 ## Part 3: OUs, users and groups
 
 **What I did:** built the OU structure below, moved PC01 into Banksia\Computers, created four security groups, and added staff to the matching OU and group.
+```
 Banksia
-├── Computers (BANKSIA-PC01)
-├── Disabled Users (leavers)
-├── Groups (Clinical Staff, Care Managers, Admin Office, Service Desk)
-├── IT (Shristi Tuladhar – Service Desk)
+├── Computers        (BANKSIA-PC01)
+├── Disabled Users   (leavers)
+├── Groups           (Clinical Staff, Care Managers, Admin Office, Service Desk)
+├── IT               (Shristi Tuladhar – Service Desk)
 └── Staff
-├── Admin (Sabrina Deppert)
-├── Clinical (Fred Luddy, Jade Erlebach, Agency RN)
-└── Management (Beth Anglin)
+    ├── Admin        (Sabrina Deppert)
+    ├── Clinical     (Fred Luddy, Jade Erlebach, Agency RN)
+    └── Management   (Beth Anglin)
+```
 
 
 **Why this design:**
