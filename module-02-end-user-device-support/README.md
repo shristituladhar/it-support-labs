@@ -128,6 +128,54 @@ Ticket closed with the restore confirmed.
 
 **Real-world note:** a backup on a drive inside the same PC doesn't protect against theft, fire or ransomware. Real backups follow the **3-2-1 rule** (3 copies, 2 types of storage, 1 off-site) and are usually run centrally, for example with OneDrive or SharePoint for user files. This lab shows the idea at small scale.
 
+## Further notes (not lab-tested)
+
+These cover syllabus topics that can't be practised in a VM. They are
+study notes, not hands-on work.
+
+### Common hardware faults: first checks
+
+| Symptom | Likely cause | First check |
+|---|---|---|
+| No power at all | Power cable, power strip or PSU | Try another outlet and cable |
+| Powers on, no display | Monitor cable or input, loose RAM | Test another monitor, reseat the RAM |
+| Random restarts or blue screens | Faulty RAM, overheating or a failing PSU | Windows Memory Diagnostic, check temperatures, Event Viewer |
+| Very slow, disk at 100%, clicking noise | Failing hard drive | Back up first, check SMART status, replace (SSD upgrade) |
+| Loud fan or hot case | Dust or a failed fan | Clean it, check the fan spins |
+| "No bootable device" | Boot order, loose cable or failed disk | Check the boot order in BIOS, then the disk |
+
+Before any hardware work: back up the data, power off and unplug (remove
+the battery on laptops), and use anti-static care. When upgrading RAM,
+match the type (e.g. DDR4 or DDR5) to what the board supports.
+
+### BIOS and driver updates
+
+- **Why:** stability, security fixes and hardware compatibility.
+- **BIOS/firmware:** check the current version (`msinfo32`), download
+  from the PC maker's site, read the release notes, back up first, keep
+  the laptop on mains power, and suspend BitLocker beforehand so it
+  doesn't ask for the recovery key. Never interrupt the update. In a
+  managed workplace it is deployed through the maker's tool or the
+  management platform, to a small test group first.
+- **Drivers:** update through Windows Update or the maker's site. If a
+  new driver breaks something (for example no network after a network
+  driver update), use Device Manager > Properties > Driver > **Roll Back
+  Driver**. Take a snapshot or restore point first.
+- A VM uses virtual hardware, so BIOS updates don't apply to it.
+
+### Imaging and deployment (concept)
+
+- **Golden image:** one fully set-up PC used as the template for others.
+- **Sysprep** removes machine-specific details (name, identity) so each
+  copy gets its own when deployed. Cloning a PC without it can cause
+  duplicate-identity problems.
+- **Capture and deploy:** capture the image (e.g. with DISM), then deploy
+  it with tools such as MDT, WDS or Intune Autopilot. For a like-for-like
+  hardware swap, a disk-cloning tool such as Clonezilla also works.
+- **User data:** move it separately (e.g. OneDrive Known Folder Move or
+  USMT) so a rebuild doesn't lose files.
+- Many workplaces now use Autopilot instead of building images.
+
 ## Key terms
 
 - **Virtual machine (VM):** a full computer running inside a window on another computer.
