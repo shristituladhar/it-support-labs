@@ -247,6 +247,14 @@ The leaver request closed with a full work note.
 
 ---
 
+## Extra notes (read up on, not done in the lab)
+
+- In a user's Account tab in ADUC we can also set logon hours, which PCs
+  they can log on to, and an account expiry date. Expiry would suit agency
+  staff like the Agency RN in Part 8. 
+- This is a one-server lab. A real setup would have a second domain
+  controller and a backup of AD, which I haven't set up.
+
 ## What I learned
 
 - **DNS is the foundation of a domain:** the DC needs a fixed IP and must be the PCs' DNS server.
