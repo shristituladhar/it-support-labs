@@ -4,7 +4,7 @@
 
 In a real service desk these tasks arrive as tickets. Ticket handling is covered in [Module 1](../module-01-servicenow-itsm/), so this module focuses on the Microsoft 365 work itself.
 
-**Skills shown:** Microsoft 365 admin centre · Entra ID · group-based licensing · Exchange Online (shared mailboxes, distribution lists, aliases, message trace) · leaver process · sign-in log troubleshooting · MFA reset · Helpdesk Administrator role · Teams · SharePoint permissions · Azure RBAC and budgets · Service health
+**Skills shown:** Microsoft 365 admin centre · Entra ID · group-based licensing · Exchange Online (shared mailboxes, distribution lists, aliases) · leaver process · sign-in log troubleshooting · MFA reset · Helpdesk Administrator role · Teams · SharePoint permissions · Azure RBAC and budgets · Service health
 
 ## Environment
 
@@ -27,7 +27,6 @@ In a real service desk these tasks arrive as tickets. Ticket handling is covered
 | Group-based licensing | A licence assigned to a group, so members receive it automatically |
 | Shared mailbox | A mailbox several people use, with no licence of its own (under the size limit) |
 | Distribution list | A group email address that delivers to all its members |
-| Message trace | Exchange tool that shows whether an email was delivered or failed, and why |
 | Security Defaults | Microsoft's baseline settings: MFA for everyone and legacy sign-in blocked |
 | MFA | Multi-factor authentication: a password plus a second proof, such as an Authenticator approval |
 | Helpdesk Administrator | An Entra role that can reset passwords for standard users only |
@@ -68,11 +67,11 @@ In a real service desk these tasks arrive as tickets. Ticket handling is covered
 
 **What I did**
 - Created the `Clinical Applications` shared mailbox and gave Fred **Full Access** and **Send As**. Fred's Outlook did not show the mailbox automatically, so I added it manually and sent a test message.
-- Sent two emails from Jade, one to Fred and one to an address that doesn't exist, and ran a **message trace** on them. The second email bounced with "Unknown To address".
+- Sent two emails from Jade, one to Fred and one to an address that doesn't exist. The second bounced with "Unknown To address".
 - Created an `All Staff` distribution list and confirmed Fred received a message sent to it.
 - Added the alias `jade.e` to Jade's mailbox.
 
-**Why:** a shared mailbox survives staff changes and needs no licence. For "my email never arrived", the bounce message tells the user what happened, and a message trace tells the admin whether it was delivered or failed, and why.
+**Why:** a shared mailbox survives staff changes and needs no licence. For "my email never arrived", the bounce message tells the user what happened. Here, the address doesn't exist.
 
 *Fred granted Send As and Full Access on the shared mailbox.*
 
@@ -252,7 +251,7 @@ In a real service desk these tasks arrive as tickets. Ticket handling is covered
 - **Error codes tell you the fix.** 50126 is a wrong password, which needs a reset.
 - **Keep access groups separate from licence groups,** and check group membership first when someone can't open a site. A Public site would have hidden the problem.
 - **Least privilege shows up in three places:** Helpdesk Administrator, Reader, and Full Access only for the person who needs it.
-- **Security Defaults reaches everywhere.** Every user, including Azure sign-ins, is pushed to register MFA.
+- **Security Defaults applies to the whole tenant.** Every account is prompted to register MFA, though users can skip for a limited time, as Fred did at first.
 
 ## Scope
 
