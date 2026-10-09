@@ -128,6 +128,7 @@ Ticket closed with the restore confirmed.
 
 **Real-world note:** a backup on a drive inside the same PC doesn't protect against theft, fire or ransomware. Real backups follow the **3-2-1 rule** (3 copies, 2 types of storage, 1 off-site) and are usually run centrally, for example with OneDrive or SharePoint for user files. This lab shows the idea at small scale.
 
+
 ## Extra notes (read up on, not done in the lab)
 
 I can't test hardware faults, BIOS updates or imaging in a VM, so these
@@ -153,6 +154,7 @@ are things I've read up on, not hands-on work.
 - A company usually sets up one PC as a template and copies it to the
   others. A tool called Sysprep strips the PC-specific details first so
   each copy is unique.
+
   
 ## Key terms
 
