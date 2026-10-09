@@ -47,7 +47,7 @@ In a real service desk these tasks arrive as tickets. Ticket handling is covered
 
 **Why:** with a group licence, a new starter needs one change (add to the group) instead of separate licence steps. Each user also needs a **usage location** set, or group licensing fails.
 
-*Active users in the new tenant. Jade shows Unlicensed here because the group licence had not applied yet when this was captured.*
+*Active users in the new tenant. Jade shows Unlicensed at the time of this capture.*
 
 ![Active users](images/01-active-users.jpg)
 
