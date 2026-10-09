@@ -43,11 +43,11 @@ Built a Windows Server 2025 domain controller (banksia.local), joined a Windows 
 
 DC01 named and given its fixed IP. *(Taken before the domain existed, so it shows WORKGROUP. The time zone was corrected from US Pacific to Sydney later; see Part 6.)*
 
-![DC01 configured](01-dc01-configured.jpg)
+![DC01 configured](images/01-dc01-configured.jpg)
 
 The banksia.local domain in Active Directory Users and Computers.
 
-![Domain created](02-domain-created.jpg)
+![Domain created](images/02-domain-created.jpg)
 
 *Real world: Microsoft recommends a subdomain of a domain the organisation owns (e.g. ad.banksiacare.com.au); `.local` is common in labs.*
 
@@ -59,7 +59,7 @@ The banksia.local domain in Active Directory Users and Computers.
 
 PC01 successfully joined to banksia.local.
 
-![PC01 joined](03-pc01-joined.jpg)
+![PC01 joined](images/03-pc01-joined.jpg)
 
 **Local vs domain accounts:** PC01 now has its **local** account from Module 2 (`.\labadmin`, works only on PC01) and **domain** accounts (`BANKSIA\username`, work on any domain PC). I kept labadmin as a backup login in case PC01 loses contact with the domain. Real organisations manage these with **LAPS**, which gives each PC a unique, rotating local admin password.
 
@@ -90,11 +90,11 @@ New accounts are set to **change password at next logon**, so only the user know
 
 The OU structure, with PC01 in Banksia\Computers.
 
-![OU structure](04-ou-structure.jpg)
+![OU structure](images/04-ou-structure.jpg)
 
 Fred's group membership: Clinical Staff plus the default Domain Users.
 
-![Fred's groups](06-user-groups-fred.jpg)
+![Fred's groups](images/06-user-groups-fred.jpg)
 
 ## Part 4: New starter request
 
@@ -104,11 +104,11 @@ Fred's group membership: Clinical Staff plus the default Domain Users.
 
 Jade's new account in Staff\Clinical.
 
-![Jade's account](07a-jade-account.jpg)
+![Jade's account](images/07a-jade-account.jpg)
 
 The request closed with a work note and an update to the manager.
 
-![New starter ticket](07b-ticket-new-starter.jpg)
+![New starter ticket](images/07b-ticket-new-starter.jpg)
 
 ## Part 5: Delegating password resets to the Service Desk
 
@@ -120,7 +120,7 @@ The request closed with a work note and an update to the manager.
 
 The delegation wizard summary.
 
-![Delegation](08-delegation.jpg)
+![Delegation](images/08-delegation.jpg)
 
 **Testing it:** I installed **RSAT** on PC01 (as Administrator, since installing Windows features needs admin rights), then logged in as my Service Desk account. The Settings app didn't list RSAT, so I installed it with PowerShell:
 `Add-WindowsCapability -Online -Name Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0`
@@ -129,11 +129,11 @@ I tested from PC01 because normal accounts can't log in to a domain controller d
 
 As the Service Desk account, resetting Fred's password **worked**.
 
-![Reset allowed](09a-delegation-test1.jpg)
+![Reset allowed](images/09a-delegation-test1.jpg)
 
 Deleting Fred was **blocked**, because deletion was never delegated. Having the tool doesn't grant power; permissions in AD do.
 
-![Delete denied](09b-delegation-test2.jpg)
+![Delete denied](images/09b-delegation-test2.jpg)
 
 ## Part 6: Group Policy and auditing
 
@@ -144,7 +144,7 @@ Set in the **Default Domain Policy**: lock after **5** wrong passwords, unlock a
 
 The lockout settings.
 
-![Lockout policy](05b-lockout-policy.jpg)
+![Lockout policy](images/05b-lockout-policy.jpg)
 
 ### Logon notice GPO
 Created **Clinical PCs - Logon Notice**, linked to Banksia\Computers, displaying before login:
@@ -154,19 +154,19 @@ Created **Clinical PCs - Logon Notice**, linked to Banksia\Computers, displaying
 
 The two message settings in the GPO.
 
-![GPO settings](10a-gpo-settings.jpg)
+![GPO settings](images/10a-gpo-settings.jpg)
 
 On PC01 I ran `gpupdate /force` and restarted. PCs normally check for new policies at startup and about every 90 minutes; this applies them immediately. The restart brings back the login screen where the notice appears.
 
 The notice on PC01 before login.
 
-![Logon notice](10b-logon-notice.jpg)
+![Logon notice](images/10b-logon-notice.jpg)
 
 `gpresult /r /scope computer` lists the policies actually applied. It's the first thing to check when someone says a policy isn't working.
 
 gpresult showing the GPO applied to PC01.
 
-![gpresult](11-gpresult.jpg)
+![gpresult](images/11-gpresult.jpg)
 
 ### Audit policy
 Set in the **Default Domain Controllers Policy** (Advanced Audit Policy), Success and Failure for:
@@ -178,7 +178,7 @@ Set in the **Default Domain Controllers Policy** (Advanced Audit Policy), Succes
 
 The audit settings.
 
-![Audit policy](05a-audit-policy.jpg)
+![Audit policy](images/05a-audit-policy.jpg)
 
 ## Part 7: Locked-out user
 
@@ -197,19 +197,19 @@ The audit settings.
 
 The lockout message on PC01.
 
-![Locked at login](12a-account-locked.jpg)
+![Locked at login](images/12a-account-locked.jpg)
 
 Fred's account showing as locked in ADUC.
 
-![Locked in ADUC](12b-account-locked.jpg)
+![Locked in ADUC](images/12b-account-locked.jpg)
 
 Event 4740: fluddy locked out, source BANKSIA-PC01.
 
-![Event 4740](13-event-4740.jpg)
+![Event 4740](images/13-event-4740.jpg)
 
 The incident resolved with the findings and fix.
 
-![Lockout ticket](14-ticket-lockout.jpg)
+![Lockout ticket](images/14-ticket-lockout.jpg)
 
 ## Part 8: Leaver
 
@@ -221,7 +221,7 @@ The incident resolved with the findings and fix.
 
 The disabled account in Disabled Users.
 
-![Leaver disabled](15-leaver-disabled.jpg)
+![Leaver disabled](images/15-leaver-disabled.jpg)
 
 **Audit check:** filtering the Security log for 4720, 4724, 4725, 4740 and 4771 shows the whole lab in order:
 
@@ -239,11 +239,11 @@ Each event's **Subject** shows who made the change, so every action, including f
 
 The filtered Security log, with an event open showing who performed it.
 
-![Audit events](16-audit-events.jpg)
+![Audit events](images/16-audit-events.jpg)
 
 The leaver request closed with a full work note.
 
-![Leaver ticket](17-ticket-leaver.jpg)
+![Leaver ticket](images/17-ticket-leaver.jpg)
 
 ---
 
