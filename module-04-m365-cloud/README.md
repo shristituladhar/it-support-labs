@@ -202,7 +202,7 @@ In a real service desk these tasks arrive as tickets. Ticket handling is covered
 
 ---
 
-## Part 7: Azure, minimal
+## Part 7: Azure resource group, budget and role-based access
 
 **Scenario:** the IT lead wants a cost limit on the lab and wants Beth to view resources without changing them.
 
