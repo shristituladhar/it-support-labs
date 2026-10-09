@@ -42,8 +42,8 @@ In a real service desk these tasks arrive as tickets. Ticket handling is covered
 
 **What I did**
 - Started the Business Premium trial. Security Defaults forced MFA registration on the admin account.
-- Created a `Clinical Staff` security group and assigned the Business Premium licence to the group.
-- Created Beth and Sabrina with licences assigned directly. Fred, Jade (new starter) and Agency RN were licensed through the group.
+- Created a `Clinical Staff` security group and assigned the Business Premium licence to the group (shown on the licence page below).
+- Beth and Sabrina were licensed directly. Fred, Jade (new starter) and Agency RN were added to the group.
 - Signed in as Jade to confirm the new starter could reach Microsoft 365.
 
 **Why:** with a group licence, a new starter needs one change (add to the group) instead of separate licence steps. Each user also needs a **usage location** set, or group licensing fails.
