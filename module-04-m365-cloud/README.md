@@ -245,21 +245,6 @@ In a real service desk these tasks arrive as tickets. Ticket handling is covered
 
 ---
 
-## Where the lab differed from the plan
-
-Microsoft's admin portals change often, so several steps did not match what I expected.
-
-| Expected | What happened |
-|---|---|
-| Set the group licence in Entra | Done in the Microsoft 365 admin centre (Billing > Licenses) |
-| Show the licence as inherited on Jade's user page | Entra's user view labelled it "Direct", so screenshot 02a uses the group's licence page instead |
-| Shared mailbox appears automatically for Fred | Added manually in Outlook |
-| "Sign out of all sessions" option | Newer screen signs the user out automatically within about 60 minutes |
-| Distribution group under "Add a group" | Now has its own Distribution list tab |
-| Fred prompted for MFA again after the reset | No prompt appeared, so I show his authentication methods before and after |
-| Create team from the Teams page | Newer Teams creates teams from within Chat |
-| Beth's create attempt fails inside the resource group | Blocked earlier, at resource provider registration |
-
 ## What I learned
 
 - **Order matters in a leaver process.** Convert the mailbox to shared before the licence is removed, and block sign-in, because a block stops new sign-ins straight away while existing sessions can last up to about 60 minutes.
