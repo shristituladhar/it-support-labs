@@ -4,6 +4,8 @@
 
 In a real service desk these tasks arrive as tickets. Ticket handling is covered in [Module 1](../module-01-servicenow-itsm/), so this module focuses on the Microsoft 365 work itself.
 
+**Skills shown:** Microsoft 365 admin centre · Entra ID · group-based licensing · Exchange Online (shared mailboxes, distribution lists, aliases, message trace) · leaver process · sign-in log troubleshooting · MFA reset · Helpdesk Administrator role · Teams · SharePoint permissions · Azure RBAC and budgets · Service health
+
 ## Environment
 
 | Item | Detail |
@@ -15,12 +17,6 @@ In a real service desk these tasks arrive as tickets. Ticket handling is covered
 | MFA | Security Defaults, Microsoft Authenticator |
 | Test users | Fred Luddy, Jade Erlebach, Beth Anglin, Sabrina Deppert, Agency RN, plus `stuladhar` (service desk) |
 | Testing method | Admin tasks in one browser, each test user in a separate InPrivate window |
-
-In a real service desk these tasks arrive as tickets. Ticket handling is covered in [Module 1](../module-01-servicenow-itsm/), so this module focuses on the Microsoft 365 work itself.
-
-**Skills shown:** Microsoft 365 admin centre · Entra ID · group-based licensing · Exchange Online (shared mailboxes, distribution lists, aliases, message trace) · leaver process · sign-in log troubleshooting · MFA reset · Helpdesk Administrator role · Teams · SharePoint permissions · Azure RBAC and budgets · Service health
-
-## Environment
 
 ## Key terms
 
