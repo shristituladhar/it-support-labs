@@ -12,7 +12,7 @@ In a real service desk these tasks arrive as tickets. Ticket handling is covered
 |---|---|
 | Platform | Microsoft 365 Business Premium (30-day trial) |
 | Tenant | `banksiacare.onmicrosoft.com` (organisation name: Banksia Care Lab) |
-| Domain | Default `onmicrosoft.com` domain, no custom domain |
+| Domain | Default `banksiacare.onmicrosoft.com`. A real company adds its own domain (for example `banksiacare.com.au`) so staff sign in with their normal work address. That needs a registered domain, so it wasn't done here. |
 | Azure | Azure free account, same tenant |
 | MFA | Security Defaults, Microsoft Authenticator |
 | Test users | Fred Luddy, Jade Erlebach, Beth Anglin, Sabrina Deppert, Agency RN, plus `stuladhar` (service desk) |
@@ -32,6 +32,65 @@ In a real service desk these tasks arrive as tickets. Ticket handling is covered
 | Helpdesk Administrator | An Entra role that can reset passwords for standard users only |
 | RBAC | Role-based access control in Azure: users get only the role they need |
 | Reader | Azure role that can view resources but not change them |
+
+## How the pieces fit together
+
+Microsoft 365 is several services behind one sign-in. Each has its own job:
+
+| Piece | What it does | In this lab |
+|---|---|---|
+| Entra ID | Who people are: accounts, groups, sign-in, MFA, admin roles | Creating users, sign-in log, MFA reset |
+| Exchange Online | Email | Shared mailbox, All Staff list, alias |
+| SharePoint Online | Where files and documents are kept, as sites with permissions | Policies and Procedures site |
+| Teams | Chat, channels and meetings. Its files are stored in SharePoint | Clinical Team |
+| Intune | Managing devices such as laptops and phones | Not covered |
+| Azure | Cloud servers, storage and networks, with their own access roles | Resource group, budget, Reader role |
+
+When Jade joins Banksia: an Entra account is created, a licence gives her a mailbox (Exchange) and Teams, and group membership gives her access to files (SharePoint). A device would be managed by Intune.
+
+Admin tasks are done in different portals:
+
+| Portal | Used for |
+|---|---|
+| Microsoft 365 admin centre | Day-to-day users, licences, shared mailboxes, service health |
+| Exchange admin centre | Mailboxes and mail settings |
+| SharePoint admin centre | Sites |
+| Entra admin centre | Sign-in logs, MFA methods, groups, admin roles |
+| Azure portal | Resource groups, budgets, access to resources |
+
+## People and names in this lab
+
+| Person | Role in the Banksia story |
+|---|---|
+| Fred Luddy | Registered nurse |
+| Jade Erlebach | New starter (nurse) |
+| Beth Anglin | Care Manager |
+| Sabrina Deppert | Admin Officer |
+| Agency RN | Temporary agency nurse (the leaver) |
+| `stuladhar` | Service desk (me) |
+
+Several names look alike but do different jobs. A group is a list of people, a team or site is a place, a licence lets you use a service, and a role lets you administer.
+
+| Name | Type | What it is |
+|---|---|---|
+| Clinical Staff | Security group | A list of people (Fred, Jade). Used to hand out the Microsoft 365 licence. |
+| Clinical Team | Team in Teams | A chat and files workspace for clinical staff. Creating it also creates a Microsoft 365 group and a SharePoint site behind it. |
+| Policy Readers | Security group | A list of people (Fred, Jade) allowed to read the Policies site. |
+| Policies and Procedures | SharePoint site | The place where policy documents are kept. Beth owns it. |
+| All Staff | Distribution list | An email address that delivers to everyone on it. It gives no access to files. |
+| Clinical Applications | Shared mailbox | A mailbox several people use. |
+
+Licences and site access use separate groups on purpose, so changing one doesn't affect the other.
+
+## Roles and licences
+
+| | Licence | Role |
+|---|---|---|
+| What it gives | The right to use a service (mailbox, Teams, Office apps) | The right to administer (reset passwords, manage users) |
+| In this lab | Business Premium, given through Clinical Staff | Helpdesk Administrator, given to `stuladhar` |
+| Set in | Microsoft 365 admin centre | Entra admin centre (Entra roles) or Azure portal (Azure roles) |
+
+`stuladhar` was created without a licence because the admin centres don't require one and the lab only tested the role. In a real company a service desk analyst would also have a licence for their own email and Teams, often with a separate admin account for admin work.
 
 ---
 
@@ -145,9 +204,11 @@ In a real service desk these tasks arrive as tickets. Ticket handling is covered
 - Registered Fred's Authenticator manually through Security info (he had skipped the first prompt). Then reset his MFA by removing the method, so his authentication methods went from Authenticator to "No usable methods".
 - Created `stuladhar` and assigned the **Helpdesk Administrator** role. As `stuladhar`, I could reset Fred's password, but resetting the admin account's password failed.
 
-**Why:** an MFA reset after a lost or replaced phone is a very common request, and it stops the old phone from being used as a second factor. Helpdesk Administrator follows least privilege, the cloud equivalent of the Module 3 delegation: reset standard users, nothing more.
+**What the role can and can't do:** as `stuladhar` I reset Fred's password (a standard user), and it worked. I then tried to reset the admin account's password, and it failed. By Microsoft's role description, Helpdesk Administrator can reset passwords for standard users and some limited roles, but not for higher-privilege accounts such as the Global Administrator.
 
-**Notes:** the failed reset showed a vague message ("We could not reset the password... null"). Both accounts have the display name "Shristi Tuladhar", so the username (`stuladhar`) is what tells them apart. The role was assigned directly to the user to keep the lab short.
+**Why:** an MFA reset after a lost or replaced phone is a very common request, and it stops the old phone from being used as a second factor. Helpdesk Administrator follows least privilege, the cloud equivalent of the Module 3 delegation: the service desk can reset standard users without being a full admin.
+
+**Notes:** the failed reset showed a vague message ("We could not reset the password... null"). Both accounts have the display name "Shristi Tuladhar", so the username (`stuladhar`) tells them apart. The role was assigned directly to the user to keep the lab short.
 
 *Security Defaults enabled for the tenant.*
 
@@ -181,6 +242,8 @@ In a real service desk these tasks arrive as tickets. Ticket handling is covered
 - Created the `Policies and Procedures` site, set it to **Private**, and added `Policy Readers` as **Visitors** (read-only).
 - Removed Jade from `Policy Readers`. She got **You need access**, and **Check Permissions** showed her access as **None**. I re-added her and she regained access.
 
+**Example:** Beth, the Care Manager, asks IT for a place to keep policy documents such as the medication handover policy. IT creates the Policies and Procedures site and makes Beth the owner. Instead of adding every nurse by hand, IT adds the Policy Readers group as read-only. Anyone added to Policy Readers can read the policies but not edit them, and anyone removed loses access, which is what happened to Jade. The Clinical Team has its own SharePoint site for its channel files, separate from this one.
+
 **Why:** a Team creates a Microsoft 365 group and a SharePoint site behind it, which is the first place to look when files are inaccessible. Access has its own group (`Policy Readers`) because `Clinical Staff` controls licences, and removing someone from it would also remove their licence. The site is Private so that removing Jade actually removes her access. On a public site she could still open it.
 
 *Clinical Team with General, Handovers and the private Management channel (lock icon).*
@@ -213,6 +276,8 @@ In a real service desk these tasks arrive as tickets. Ticket handling is covered
 - No virtual machines or other billable resources were created.
 
 **Why:** a budget sends alerts but does not stop spending, so it is the first control an admin sets. Reader is least privilege: Beth can see the resources but can't change anything.
+
+**Entra roles and Azure roles are separate:** Helpdesk Administrator (Part 5) controls what someone can do to users. Reader controls what someone can do to Azure resources. Both follow least privilege.
 
 **Note:** the storage error is about registering a provider at subscription level, so it shows Beth cannot make changes, but it is not a precise test of the Reader role.
 
@@ -255,4 +320,4 @@ In a real service desk these tasks arrive as tickets. Ticket handling is covered
 
 ## Scope
 
-The cloud tenant is separate from `banksia.local`, so the users were recreated here. Syncing the two with Entra Connect was not done. This is a simulated home lab on a trial tenant, aimed at L1/L2 cloud account administration and support.
+The cloud tenant is separate from `banksia.local`, so the users were recreated here for learning. In a real move from Active Directory to Microsoft 365, a company would usually sync its existing accounts to Entra ID (with Entra Connect) so each person keeps one identity. That sync, device management with Intune, and Conditional Access were not covered in this module. This is a simulated home lab on a trial tenant, aimed at L1/L2 cloud account administration and support.
