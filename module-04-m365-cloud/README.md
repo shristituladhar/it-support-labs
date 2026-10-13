@@ -247,14 +247,12 @@ IT creates the team and a private Management channel. IT then creates a SharePoi
 A few days later Jade reports that she can't open the policies site. IT checks her permissions on the site and finds she has none, because she is no longer in Policy Readers. IT adds her back, and she can open the site again.
 
 **What I did**
-- As Beth, created the private team `Clinical Team` with **General**, **Handovers** and a private **Management** channel. The current Teams puts team creation inside Chat. Each private channel also gets its own SharePoint site.
+- As Beth, created the private team `Clinical Team` with **General**, **Handovers** and a private **Management** channel. The current Teams puts team creation inside Chat.
 - Created a `Policy Readers` security group (Fred and Jade).
 - Created the `Policies and Procedures` site, set it to **Private**, and added `Policy Readers` as **Visitors** (read-only).
 - Removed Jade from `Policy Readers`. She got **You need access**, and **Check Permissions** showed her access as **None**. I re-added her and she regained access.
 
-**Example:** Beth, the Care Manager, asks IT for a place to keep policy documents such as the medication handover policy. IT creates the Policies and Procedures site and makes Beth the owner. Instead of adding every nurse by hand, IT adds the Policy Readers group as read-only. Anyone added to Policy Readers can read the policies but not edit them, and anyone removed loses access, which is what happened to Jade. The Clinical Team has its own SharePoint site for its channel files, separate from this one.
-
-**Why:** a Team creates a Microsoft 365 group and a SharePoint site behind it, which is the first place to look when files are inaccessible. Access has its own group (`Policy Readers`) because `Clinical Staff` controls licences, and removing someone from it would also remove their licence. The site is Private so that removing Jade actually removes her access. On a public site she could still open it.
+**Why:** a Team creates a Microsoft 365 group and a SharePoint site behind it, which is the first place to look when files are inaccessible. Each private channel also gets its own SharePoint site. Access to the policies site has its own group because `Clinical Staff` controls licences, and removing someone from it would also remove their licence. The site is Private so that removing Jade actually removes her access. On a public site she could still open it.
 
 *Clinical Team with General, Handovers and the private Management channel (lock icon).*
 
