@@ -6,12 +6,6 @@ In a real service desk these tasks arrive as tickets. Ticket handling is covered
 
 **Skills shown:** Microsoft 365 admin centre · Entra ID · group-based licensing · Exchange Online (shared mailboxes, distribution lists, aliases) · leaver process · sign-in log troubleshooting · MFA reset · Helpdesk Administrator role · Teams · SharePoint permissions · Azure RBAC and budgets · Service health
 
-## Real-world context
-
-In a real company, staff usually already have accounts in Active Directory. Instead of recreating them, the company installs Microsoft Entra Connect, which copies (syncs) the AD users and groups to Entra ID, so each person keeps one identity and one password. Changes are made in AD, such as disabling a leaver, and reach Microsoft 365 after the next sync. This is called a hybrid setup. Staff also sign in with the company's own domain (for example `banksiacare.com.au`), not `onmicrosoft.com`.
-
-In this lab, the cloud tenant is separate from `banksia.local`, so I recreated the users by hand and used the default `onmicrosoft.com` domain. This module covers the cloud administration side.
-
 ## Environment
 
 | Item | Detail |
@@ -325,3 +319,7 @@ A few days later Jade reports that she can't open the policies site. IT checks h
 - **Keep access groups separate from licence groups,** and check group membership first when someone can't open a site. A Public site would have hidden the problem.
 - **Least privilege shows up in three places:** Helpdesk Administrator, Reader, and Full Access only for the person who needs it.
 - **Security Defaults applies to the whole tenant.** Every account is prompted to register MFA, though users can skip for a limited time, as Fred did at first.
+
+## Scope
+
+The cloud tenant is separate from `banksia.local`, so the users were recreated here for learning. In a real move from Active Directory to Microsoft 365, a company would usually sync its existing accounts to Entra ID (with Entra Connect) so each person keeps one identity. That sync, device management with Intune, and Conditional Access were not covered in this module. This is a simulated home lab on a trial tenant, aimed at L1/L2 cloud account administration and support.
