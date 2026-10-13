@@ -240,7 +240,11 @@ Licences and site access use separate groups on purpose, so changing one doesn't
 
 ## Part 6: Teams and SharePoint
 
-**Scenario:** Beth sets up a team and a read-only policies site, and Jade can't open the site.
+**Scenario:** Beth Anglin, the Care Manager, emails IT with two requests. She wants a Teams space for her clinical team, with a private channel that only she can see for management matters. She also wants a safe place to keep policy documents, such as the medication handover policy, that clinical staff can read but not edit.
+
+IT creates the team and a private Management channel. IT then creates a SharePoint site called Policies and Procedures, makes Beth the owner, and adds a Policy Readers group as read-only. Fred and Jade go into that group, rather than being added to the site one by one.
+
+A few days later Jade reports that she can't open the policies site. IT checks her permissions on the site and finds she has none, because she is no longer in Policy Readers. IT adds her back, and she can open the site again.
 
 **What I did**
 - As Beth, created the private team `Clinical Team` with **General**, **Handovers** and a private **Management** channel. The current Teams puts team creation inside Chat. Each private channel also gets its own SharePoint site.
