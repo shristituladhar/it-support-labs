@@ -214,7 +214,7 @@ Licences and site access use separate groups on purpose, so changing one doesn't
 
 **Why:** an MFA reset after a lost or replaced phone is a very common request, and it stops the old phone from being used as a second factor. Helpdesk Administrator follows least privilege, the cloud equivalent of the Module 3 delegation: the service desk can reset standard users without being a full admin.
 
-**Notes:** the failed reset showed a vague message ("We could not reset the password... null"). Both accounts have the display name "Shristi Tuladhar", so the username (`stuladhar`) tells them apart. The role was assigned directly to the user to keep the lab short.
+**Notes:** the failed reset showed a vague message ("We could not reset the password... null"). Both accounts have the display name "Shristi Tuladhar", so the username (`stuladhar`) tells them apart. The role was assigned directly to the user.
 
 *Security Defaults enabled for the tenant.*
 
