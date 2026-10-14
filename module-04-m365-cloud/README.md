@@ -6,6 +6,8 @@ In a real service desk these tasks arrive as tickets. Ticket handling is covered
 
 **Skills shown:** Microsoft 365 admin centre · Entra ID · group-based licensing · Exchange Online (shared mailboxes, distribution lists, aliases) · leaver process · sign-in log troubleshooting · MFA reset · Helpdesk Administrator role · Teams · SharePoint permissions · Azure RBAC and budgets · Service health
 
+**In real life:** a company moving from on-premises Active Directory to Microsoft 365 does not recreate its users one by one. It installs Entra Connect, which copies the existing AD users and groups up to Entra ID automatically, so each person keeps the same account and, depending on the setup, the same password. After that, IT keeps managing synced users in Active Directory (new starters, leavers, group changes), and the changes flow to the cloud. IT then assigns licences, usually through a group, as in Part 1. In this lab I created the cloud users by hand for learning, so the sync wasn't built. 
+
 ## Environment
 
 | Item | Detail |
@@ -241,7 +243,7 @@ IT creates the team and a private Management channel. IT then creates a SharePoi
 A few days later Jade reports that she can't open the policies site. IT checks her permissions on the site and finds she has none, because she is no longer in Policy Readers. IT adds her back, and she can open the site again.
 
 **What I did**
-- As Beth, created the private team `Clinical Team` with **General**, **Handovers** and a private **Management** channel. The current Teams puts team creation inside Chat.
+- Created the private team `Clinical Team` (signed in as Beth) with **General**, **Handovers** and a private **Management** channel. The current Teams puts team creation inside Chat.
 - Created a `Policy Readers` security group (Fred and Jade).
 - Created the `Policies and Procedures` site, set it to **Private**, and added `Policy Readers` as **Visitors** (read-only).
 - Removed Jade from `Policy Readers`. She got **You need access**, and **Check Permissions** showed her access as **None**. I re-added her and she regained access.
@@ -320,6 +322,16 @@ A few days later Jade reports that she can't open the policies site. IT checks h
 - **Least privilege shows up in three places:** Helpdesk Administrator, Reader, and Full Access only for the person who needs it.
 - **Security Defaults applies to the whole tenant.** Every account is prompted to register MFA, though users can skip for a limited time, as Fred did at first.
 
-## Scope
+---
 
-The cloud tenant is separate from `banksia.local`, so the users were recreated here for learning. In a real move from Active Directory to Microsoft 365, a company would usually sync its existing accounts to Entra ID (with Entra Connect) so each person keeps one identity. That sync, device management with Intune, and Conditional Access were not covered in this module. This is a simulated home lab on a trial tenant, aimed at L1/L2 cloud account administration and support.
+## Quick reference: common problems
+
+| Problem | First check | In this lab |
+|---|---|---|
+| User can't sign in | Entra sign-in logs, error code | 50126 (wrong password), so reset the password |
+| Can't see a shared mailbox | Delegation (Full Access, Send As) | Permission was granted, then the mailbox was added manually in Outlook |
+| Email never arrived | The bounce message | The address didn't exist |
+| Can't open a SharePoint site | Check Permissions, then group membership | Jade was re-added to Policy Readers |
+| User has a new phone | Authentication methods | Removed the old method so a new one can be registered |
+| New user has no licence | Usage location, group membership, wait 10-30 minutes | Licence assigned to the Clinical Staff group |
+| Teams slow for many users | Service health | Check for a known Microsoft issue before changing anything |
