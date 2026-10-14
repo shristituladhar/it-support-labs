@@ -47,7 +47,7 @@ Microsoft 365 is several services behind one sign-in. Each has its own job:
 | Exchange Online | Email | Shared mailbox, All Staff list, alias |
 | SharePoint Online | Where files and documents are kept, as sites with permissions | Policies and Procedures site |
 | Teams | Chat, channels and meetings. Its files are stored in SharePoint | Clinical Team |
-| Intune | Managing devices such as laptops and phones | Not covered |
+| Intune | Managing devices such as laptops and phones | Not covered in this module |
 | Azure | Cloud servers, storage and networks, with their own access roles | Resource group, budget, Reader role |
 
 When Jade joins Banksia: an Entra account is created, a licence gives her a mailbox (Exchange) and Teams, and group membership gives her access to files (SharePoint). A device would be managed by Intune.
