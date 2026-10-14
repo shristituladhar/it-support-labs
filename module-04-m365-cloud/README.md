@@ -34,6 +34,8 @@ In a real service desk these tasks arrive as tickets. Ticket handling is covered
 | Helpdesk Administrator | An Entra role that can reset passwords for standard users only |
 | RBAC | Role-based access control in Azure: users get only the role they need |
 | Reader | Azure role that can view resources but not change them |
+| Resource group | A container in Azure that holds related resources, so access, cost and deletion can be managed together |
+| Service health | Admin centre page showing whether Microsoft's own services have known problems |
 
 ## How the pieces fit together
 
