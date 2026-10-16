@@ -394,23 +394,6 @@ If a user says their VPN won't connect, these are the checks: are the keys right
 
 ## 8. Extra notes
 
-Some more topics that go with this module.
-
-**Cabling**
-- **T568A vs T568B:** two standards for the order of the eight wires in an RJ45 plug. Either works as long as both ends of a cable use the same one, so the key is to pick one and use it everywhere.
-- **Straight-through vs crossover:** a straight-through cable has the same standard at both ends and joins different kinds of device, like a PC to a switch. A crossover has A at one end and B at the other and joins similar devices, like a switch to a switch. Most modern ports sort this out themselves, so a straight-through usually works for both.
-- **Fibre:** sends light through glass instead of electricity through copper. Single-mode fibre is for long distances and multi-mode for shorter runs inside a building. Never look into the end of a live fibre, because the light can damage your eyes.
-
-**Racks and patch panels**
-- **Patch panel and punch-down:** the cables from the wall sockets end at a patch panel in the comms room. A punch-down tool pushes each wire into its slot on the back of the panel. Short patch leads then connect the front of the panel to the switch.
-- **Rack units:** a rack is 19 inches wide, and equipment height is measured in rack units (U). One U is 44.45 mm (1.75 inches), so a typical switch is 1U.
-- **Cable management and layout:** label both ends of every cable, use velcro rather than tight zip ties, and don't bend cables sharply. Heavy gear like a UPS usually goes at the bottom of the rack, with the patch panel and switches higher up.
-
-**Cable tracing and testing**
-- **Toner and probe:** a tone generator on one end of a cable sends a signal, and a probe at the other end finds which cable it is, so you can trace one cable in a bundle.
-- **Tester vs certifier:** a basic tester checks the wiring (the wires connect to the right pins). A certifier tests the cable's performance against a standard, like Cat5e or Cat6, and gives a pass or fail for use in a real install.
-- **Faults:** an **open** is a broken wire, a **short** is two wires touching, and a **split pair** is when the right pins are connected but the wires come from different twisted pairs. A split pair can pass a basic wiring test, but it causes interference and slow speeds.
-
 **Wi-Fi and the router**
 - **Mesh Wi-Fi:** several nodes work together as one network with one name, and devices move between them as you walk around.
 - **Guest SSID:** a separate Wi-Fi name for visitors, kept apart from the internal network, usually on its own VLAN.
