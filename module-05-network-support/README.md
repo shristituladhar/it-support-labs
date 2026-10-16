@@ -394,8 +394,6 @@ If a user says their VPN won't connect, these are the checks: are the keys right
 
 ## What I learned
 
-Before this module I couldn't have told you what DHCP or DNS did. Now I can explain both, because I broke each one and then fixed it.
-
 - A 169.254 address looked like a broken PC to me at first. It just means the PC asked for an address and nobody answered. PC01 got one before DHCP was installed, and again when I filled the scope.
 - I mixed up the gateway fault and the DNS fault at first. If `ping 8.8.8.8` works but websites don't, it's DNS. If even 8.8.8.8 fails, it's the gateway.
 - My static IP didn't save the first time, and PC01 was still on DHCP. `ipconfig /all` showed "DHCP Enabled: Yes", so now I check that before I trust any test.
