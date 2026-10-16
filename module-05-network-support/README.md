@@ -32,7 +32,7 @@ The skills come from my studies, and I built every part of this myself for Banks
 | Hypervisor | VMware Workstation, network VMnet8 (NAT) |
 | DC01 | Windows Server 2025 Standard (evaluation), domain `banksia.local`, 192.168.126.10 |
 | PC01 | Windows 11 Enterprise (evaluation), on `banksia.local` |
-| Network simulator | Cisco Packet Tracer (files: `part3-soho-wan.pkt`, `part4-vlans.pkt`) |
+| Network simulator | Cisco Packet Tracer (files: [part3-soho-wan.pkt](packet-tracer/part3-soho-wan.pkt), [part4-vlans.pkt](packet-tracer/part4-vlans.pkt)) |
 | VPN | WireGuard for Windows |
 
 **Setup notes**
@@ -246,7 +246,7 @@ Verified: PC01 received 192.168.126.104 from DHCP server 192.168.126.10.
 
 ## 4. SOHO router, Wi-Fi and WAN (Packet Tracer, simulated)
 
-This is a separate Packet Tracer file (`part3-soho-wan.pkt`). It is the kind of small-office equipment a service desk supports.
+   This is a separate Packet Tracer file, [part3-soho-wan.pkt](packet-tracer/part3-soho-wan.pkt). It is the kind of small-office equipment a service desk supports.
 
 I set up a Wireless-N router with its own LAN address of 192.168.20.1 and DHCP handing out addresses from .100 for up to 20 users.
 
@@ -280,7 +280,7 @@ The WAN link is simulated. A real provider link would add an ISP and usually dyn
 
 ## 5. VLANs and device management (Packet Tracer, simulated)
 
-This is a new Packet Tracer file (`part4-vlans.pkt`), built for Banksia. A 2960 switch (`BANKSIA-SW1`) and a 2911 router (`BANKSIA-R1`) connect a Clinical PC, an Admin PC, a TFTP server and a Guest PC. The server stands in for the real servers at the site.
+   This is a new Packet Tracer file, [part4-vlans.pkt](packet-tracer/part4-vlans.pkt), built for Banksia. A 2960 switch (`BANKSIA-SW1`) and a 2911 router (`BANKSIA-R1`) connect a Clinical PC, an Admin PC, a TFTP server and a Guest PC. The server stands in for the real servers at the site.
 
 Caption: the topology.
 
