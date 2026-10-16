@@ -6,6 +6,7 @@ The skills come from my studies, and I built every part of this myself for Banks
 
 | Part | Where it ran | Real or simulated |
 |---|---|---|
+| 1. Fundamentals | None | Notes |
 | 2. DHCP and DNS | VMware (DC01, PC01) | Real VMs |
 | 3. Troubleshooting: gateway, DNS, IP conflict | VMware (DC01, PC01) | Real VMs |
 | 4. SOHO Wi-Fi router and WAN | Packet Tracer | Simulated |
