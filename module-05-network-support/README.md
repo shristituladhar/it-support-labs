@@ -253,7 +253,7 @@ I set up a Wireless-N router with its own LAN address of 192.168.20.1 and DHCP h
 
 *The router's basic setup, with the LAN address and DHCP range.*
 
-![Router LAN and DHCP](images/08-router-lan-dhcp.jpg)
+![Router LAN and DHCP](images/08-router-lan-setup.jpg)
 
 I set the Wi-Fi name to `Banksia-Staff` with WPA2 Personal and AES encryption. The passphrase on screen is a lab passphrase for a simulated router.
 
@@ -392,27 +392,17 @@ If a user says their VPN won't connect, these are the checks: are the keys right
 
 ---
 
-## 8. Extra notes
-
-**Wi-Fi and the router**
-- **Mesh Wi-Fi:** several nodes work together as one network with one name, and devices move between them as you walk around.
-- **Guest SSID:** a separate Wi-Fi name for visitors, kept apart from the internal network, usually on its own VLAN.
-- **Port forwarding:** the router sends traffic that arrives on a certain port to one device inside the network, for example a camera. It can also expose that device to the internet, so it needs care.
-- **2.4 vs 5 GHz:** 2.4 GHz travels further through walls but is slower and more crowded. 5 GHz is faster and less crowded but has shorter range.
-
-**Network rules and resilience**
-- **ACLs:** rules on a router that permit or deny traffic by address or port. For example, an ACL could stop the Guest VLAN reaching the Clinical VLAN.
-- **DHCP failover:** two DHCP servers share one scope, so if one goes down the other keeps handing out addresses.
-
----
-
 ## What I learned
 
-- A device with a 169.254 address couldn't get anything from DHCP. The first questions are whether the DHCP server is up and whether the scope has free addresses.
-- The same symptom can have different causes, and the order of the checks tells them apart. If the gateway is wrong, even `ping 8.8.8.8` fails. If DNS is wrong, `ping 8.8.8.8` works and `nslookup` doesn't.
-- `nslookup google.com 8.8.8.8` is a quick way to separate "the internet is down" from "this PC is asking the wrong DNS server".
-- With no conflict popup, `arp -a` and Event 4199 still showed which address was duplicated and which MAC was already using it.
-- A DHCP option typed wrongly can look fine. I first set the router option to DC01's own address by mistake, and only the options view in the DHCP console showed it was wrong.
-- A VLAN keeps ports apart even on one switch. A link light that is on doesn't mean the port is in the right VLAN, so `show vlan brief` is the first check when a connected PC can't reach anything.
-- Static routes were enough for two sites, because each router has only one way to the other.
-- For SSH on a Cisco device, the order matters: hostname and domain name first, then the RSA key.
+Before this module I couldn't have told you what DHCP or DNS did. Now I can explain both, because I broke each one and then fixed it.
+
+- A 169.254 address looked like a broken PC to me at first. It just means the PC asked for an address and nobody answered. PC01 got one before DHCP was installed, and again when I filled the scope.
+- I mixed up the gateway fault and the DNS fault at first. If `ping 8.8.8.8` works but websites don't, it's DNS. If even 8.8.8.8 fails, it's the gateway.
+- My static IP didn't save the first time, and PC01 was still on DHCP. `ipconfig /all` showed "DHCP Enabled: Yes", so now I check that before I trust any test.
+- I typed the router option as DC01's address instead of the gateway. Nothing warned me, and I only saw it when I opened the scope options.
+- There was no popup for the IP conflict, but `arp -a` and Event 4199 still showed which address was duplicated.
+- In VMware the MAC "Generate" button is greyed out while the VM is running, so the VM has to be shut down first.
+- In Packet Tracer I kept typing `show` commands in config mode, where they don't work. `end` takes you back out.
+- A switch I started with still had an old config on it, so I replaced it with a new one to start clean.
+- A port can show a green link and still be in the wrong VLAN, so `show vlan brief` is where I look first.
+- The SSH login from the Admin PC didn't work and I couldn't work out why, so I backed up the router config from its console. I'd like to go back and fix it.
