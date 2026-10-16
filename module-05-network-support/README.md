@@ -394,13 +394,11 @@ If a user says their VPN won't connect, these are the checks: are the keys right
 
 ## What I learned
 
-- A 169.254 address looked like a broken PC to me at first. It just means the PC asked for an address and nobody answered. PC01 got one before DHCP was installed, and again when I filled the scope.
-- I mixed up the gateway fault and the DNS fault at first. If `ping 8.8.8.8` works but websites don't, it's DNS. If even 8.8.8.8 fails, it's the gateway.
-- My static IP didn't save the first time, and PC01 was still on DHCP. `ipconfig /all` showed "DHCP Enabled: Yes", so now I check that before I trust any test.
-- I typed the router option as DC01's address instead of the gateway. Nothing warned me, and I only saw it when I opened the scope options.
-- There was no popup for the IP conflict, but `arp -a` and Event 4199 still showed which address was duplicated.
-- In VMware the MAC "Generate" button is greyed out while the VM is running, so the VM has to be shut down first.
-- In Packet Tracer I kept typing `show` commands in config mode, where they don't work. `end` takes you back out.
-- A switch I started with still had an old config on it, so I replaced it with a new one to start clean.
-- A port can show a green link and still be in the wrong VLAN, so `show vlan brief` is where I look first.
-- The SSH login from the Admin PC didn't work and I couldn't work out why, so I backed up the router config from its console. I'd like to go back and fix it.
+- A 169.254 address means the PC asked for an address and nothing answered. The first checks are whether the DHCP server is up and whether the scope has free addresses.
+- Gateway, DNS and DHCP faults each look different, and a fixed order of checks tells them apart. If even `ping 8.8.8.8` fails, it's the gateway. If that works but websites don't, it's DNS.
+- `nslookup google.com 8.8.8.8` separates "the internet is down" from "this PC is asking the wrong DNS server".
+- A full DHCP scope is fixed by finding why it's full, not just by clearing leases. Mine was too small, so I made it bigger.
+- With no popup, `arp -a` and Event 4199 still showed which address was duplicated and which device already owned it.
+- I check the settings before trusting a test. I once set the router option to the wrong address, and only the options view in the DHCP console showed it.
+- A green link doesn't mean the port is in the right VLAN, so `show vlan brief` is where I start when a connected PC can't reach anything.
+- VLANs need a router to talk to each other, and two sites need a route to each other's network.
