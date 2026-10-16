@@ -101,23 +101,23 @@ DC01 hands out addresses on the Banksia lab network. I installed the DHCP role, 
 
 **Scope `Banksia LAN`:** 192.168.126.100 to .103, /24, 8-hour lease. Options: router 192.168.126.2, DNS 192.168.126.10, domain `banksia.local`. A reservation called `Nurses-Printer` gives 192.168.126.103 to a made-up printer MAC.
 
-Caption: the scope options (003 router, 006 DNS, 015 domain) on the left and the reservation on the right.
+*The scope options (003 router, 006 DNS, 015 domain) on the left and the reservation on the right.*
 
 ![DHCP console](images/01-dhcp-console.jpg)
 
 PC01 is set to get its IP and DNS automatically. After a release and renew it has 192.168.126.100, gateway .2, DHCP server .10 and DNS .10. The DNS line is the proof that option 006 works.
 
-Caption: PC01's lease, with the address, gateway, DHCP server and DNS server highlighted.
+*PC01's lease, with the address, gateway, DHCP server and DNS server highlighted.*
 
 ![PC01 lease](images/02-pc01-lease.jpg)
 
 I added an A record `printer01` pointing to 192.168.126.103, then looked it up from PC01.
 
-Caption: the `printer01` record in DNS Manager on DC01.
+*The `printer01` record in DNS Manager on DC01.*
 
 ![DNS Manager](images/03a-dns-manager.jpg)
 
-Caption: `nslookup printer01` on PC01 returning 192.168.126.103.
+*`nslookup printer01` on PC01 returning 192.168.126.103.*
 
 ![nslookup printer01](images/03b-dns-nslookup.jpg)
 
@@ -127,24 +127,24 @@ With only four addresses, it doesn't take many devices to fill the scope. DHCP i
 
 - PC01 with its original MAC held .100.
 - My host laptop's VMnet8 adapter had also taken .101 from DC01, because VMware's DHCP was off.
-- After one MAC change PC01 got .102, so .103 (the reservation) was the only other address.
-- After the next change there was nothing left to give, and PC01 fell back to an APIPA address.
+- After one MAC change PC01 got .102. The only address left was .103, which is reserved for the printer, so the pool was full.
+- After the next MAC change there was nothing left to give, and PC01 fell back to an APIPA address.
 
-Caption: PC01 with no lease. The release fails, the renew times out, and the adapter ends up on 169.254.239.228.
+*PC01 with no lease. The release fails, the renew times out, and the adapter ends up on 169.254.239.228.*
 
 ![PC01 APIPA](images/04-pc01-apipa.jpg)
 
-Caption: the address leases on DC01 with .100, .101 and .102 leased and the .103 reservation.
+*The address leases on DC01 with .100, .101 and .102 leased and the .103 reservation.*
 
 ![Scope full](images/05-scope-full.jpg)
 
-Caption: the scope statistics showing 4 addresses in use (100%) and 0 available.
+*The scope statistics showing 4 addresses in use (100%) and 0 available.*
 
 ![Scope statistics](images/06-scope-statistics.jpg)
 
 **The fix.** The real cause is a scope that is too small. I extended the end of the range to 192.168.126.120, which adds 17 free addresses. Shortening the lease time or deleting stale leases would also have helped, but they treat the symptom. After a release and renew PC01 got 192.168.126.104.
 
-Caption: PC01 back on a valid address (192.168.126.104) with the right gateway, DHCP server and DNS.
+*PC01 back on a valid address (192.168.126.104) with the right gateway, DHCP server and DNS.*
 
 ![Scope fixed](images/07-scope-fixed.jpg)
 
@@ -168,13 +168,13 @@ For each fault I used the same method, going from near to far: `ipconfig /all`, 
 
 A nurse at the nurses' station can open the shared drive but not the internet. PC01 was set to a static IP of 192.168.126.150 with a gateway of 192.168.126.99, where nothing exists.
 
-Caption: broken. The gateway is .99, DC01 answers, `ping 8.8.8.8` is 100% loss and `tracert` stops at the first hop.
+*Broken. The gateway is .99, DC01 answers, `ping 8.8.8.8` is 100% loss and `tracert` stops at the first hop.*
 
 ![Gateway broken](images/20-gateway-broken.jpg)
 
 I changed only the gateway to 192.168.126.2 and ran the same checks.
 
-Caption: fixed. The gateway answers, 8.8.8.8 answers, google.com resolves, and `tracert` now shows 192.168.126.2 as hop 1.
+*Fixed. The gateway answers, 8.8.8.8 answers, google.com resolves, and `tracert` now shows 192.168.126.2 as hop 1.*
 
 ![Gateway fixed](images/21-gateway-fixed.jpg)
 
@@ -193,13 +193,13 @@ Verified: ping 192.168.126.2 and 8.8.8.8 4 of 4 replies, google.com resolves, tr
 
 The internet shows as connected, but no websites open. The gateway was correct, and DNS was set to 192.168.126.99.
 
-Caption: broken. `ping 8.8.8.8` works, `nslookup google.com` times out against .99, and `nslookup google.com 8.8.8.8` works, which isolates the fault to the DNS setting.
+*Broken. `ping 8.8.8.8` works, `nslookup google.com` times out against .99, and `nslookup google.com 8.8.8.8` works, which isolates the fault to the DNS setting.*
 
 ![DNS broken](images/22-dns-broken.jpg)
 
 I set DNS back to 192.168.126.10 and ran `ipconfig /flushdns` to clear anything cached.
 
-Caption: fixed. DNS is .10 and google.com resolves straight away.
+*Fixed. DNS is .10 and google.com resolves straight away.*
 
 ![DNS fixed](images/23-dns-fixed.jpg)
 
@@ -218,17 +218,17 @@ Verified: ping 8.8.8.8 4 of 4, nslookup google.com resolved via 192.168.126.10.
 
 A PC says there is an address problem and the connection is unreliable. I gave PC01 the static address 192.168.126.10, which is DC01's address. I set it in the network adapter window, so any popup would show. None appeared, so the evidence came from other places.
 
-Caption: `arp -a` on PC01. The interface line shows the 169.254 fallback address, and .10 maps to a different MAC (00-0c-29-98-be-ae) from PC01's own (00-50-56-2d-87-d7).
+*`arp -a` on PC01. The interface line shows the 169.254 fallback address, and .10 maps to a different MAC (00-0c-29-98-be-ae) from PC01's own (00-50-56-2d-87-d7).*
 
 ![ARP table](images/24a-ipconflict-arp.jpg)
 
-Caption: Event 4199 (Tcpip) in the System log, reporting a conflict for 192.168.126.10 with hardware address 00-0C-29-98-BE-AE.
+*Event 4199 (Tcpip) in the System log, reporting a conflict for 192.168.126.10 with hardware address 00-0C-29-98-BE-AE.*
 
 ![Event 4199](images/24b-ipconflict-eventlog.jpg)
 
 I set PC01 back to automatic IP and DNS and ran a release and renew.
 
-Caption: PC01 back on DHCP with 192.168.126.104, gateway .2, DHCP server .10 and DNS .10.
+*PC01 back on DHCP with 192.168.126.104, gateway .2, DHCP server .10 and DNS .10.*
 
 ![IP conflict fixed](images/25-ipconflict-fixed.jpg)
 
@@ -247,23 +247,23 @@ Verified: PC01 received 192.168.126.104 from DHCP server 192.168.126.10.
 
 ## 4. SOHO router, Wi-Fi and WAN (Packet Tracer, simulated)
 
-   This is a separate Packet Tracer file, [part3-soho-wan.pkt](packet-tracer/part3-soho-wan.pkt). It is the kind of small-office equipment a service desk supports.
+This is a separate Packet Tracer file, [part3-soho-wan.pkt](packet-tracer/part3-soho-wan.pkt). It is the kind of small-office equipment a service desk supports.
 
 I set up a Wireless-N router with its own LAN address of 192.168.20.1 and DHCP handing out addresses from .100 for up to 20 users.
 
-Caption: the router's basic setup, with the LAN address and DHCP range.
+*The router's basic setup, with the LAN address and DHCP range.*
 
 ![Router LAN and DHCP](images/08-router-lan-dhcp.jpg)
 
 I set the Wi-Fi name to `Banksia-Staff` with WPA2 Personal and AES encryption. The passphrase on screen is a lab passphrase for a simulated router.
 
-Caption: wireless security set to WPA2 Personal with AES.
+*Wireless security set to WPA2 Personal with AES.*
 
 ![Wireless security](images/09-wireless-security.jpg)
 
 I swapped the laptop's wired module for a wireless one (WPC300N) and connected it to `Banksia-Staff`.
 
-Caption: the laptop connected to the access point with full signal and link quality.
+*The laptop connected to the access point with full signal and link quality.*
 
 ![Laptop connected](images/10-laptop-connected.jpg)
 
@@ -271,7 +271,7 @@ Caption: the laptop connected to the access point with full signal and link qual
 
 Two routers, `MAIN` and `NORTHSIDE`, each with its own LAN, joined by a link on 10.0.0.0/30. Each router needs a static route to the other site's LAN, because it has no other way to learn it.
 
-Caption: MAIN's routing table with the static route to 192.168.30.0/24 via 10.0.0.2, next to a successful ping from a PC at MAIN to a PC at NORTHSIDE. The first attempt timed out while ARP resolved, so this is the second attempt.
+*MAIN's routing table with the static route to 192.168.30.0/24 via 10.0.0.2, next to a successful ping from a PC at MAIN to a PC at NORTHSIDE. The first attempt timed out while ARP resolved, so this is the second attempt.*
 
 ![WAN routes and ping](images/11-wan-routes-ping.jpg)
 
@@ -281,21 +281,21 @@ The WAN link is simulated. A real provider link would add an ISP and usually dyn
 
 ## 5. VLANs and device management (Packet Tracer, simulated)
 
-   This is a new Packet Tracer file, [part4-vlans.pkt](packet-tracer/part4-vlans.pkt), built for Banksia. A 2960 switch (`BANKSIA-SW1`) and a 2911 router (`BANKSIA-R1`) connect a Clinical PC, an Admin PC, a TFTP server and a Guest PC. The server stands in for the real servers at the site.
+This is a new Packet Tracer file, [part4-vlans.pkt](packet-tracer/part4-vlans.pkt), built for Banksia. A 2960 switch (`BANKSIA-SW1`) and a 2911 router (`BANKSIA-R1`) connect a Clinical PC, an Admin PC, a TFTP server and a Guest PC. The server stands in for the real servers at the site.
 
-Caption: the topology.
+*The topology.*
 
 ![VLAN topology](images/12-vlan-topology.jpg)
 
 I created three VLANs and put each port in one: Clinical (VLAN 10) on Fa0/1, Admin (VLAN 20) on Fa0/2 and Fa0/3, and Guest (VLAN 30) on Fa0/4.
 
-Caption: `show vlan brief` with each port in its VLAN.
+*`show vlan brief` with each port in its VLAN.*
 
 ![show vlan brief](images/13-show-vlan-brief.jpg)
 
 Before the trunk and router existed, I checked that the VLANs are isolated.
 
-Caption: a ping from the Clinical PC to the Admin PC at 100% loss.
+*A ping from the Clinical PC to the Admin PC at 100% loss.*
 
 ![Ping blocked](images/14-ping-blocked.jpg)
 
@@ -303,11 +303,11 @@ Caption: a ping from the Clinical PC to the Admin PC at 100% loss.
 
 The switch keeps the VLANs apart, so a router is needed to connect them. I made Fa0/24 a trunk and gave the router one subinterface per VLAN (10.10.10.1, 10.10.20.1 and 10.10.30.1), each using 802.1Q tagging.
 
-Caption: the trunk on the switch (VLANs 1, 10, 20 and 30 active) and the router's subinterfaces up with the right addresses.
+*The trunk on the switch (VLANs 1, 10, 20 and 30 active) and the router's subinterfaces up with the right addresses.*
 
 ![Router subinterfaces and trunk](images/15-router-subinterfaces-trunk.jpg)
 
-Caption: the same ping that failed before now works. The first attempt timed out while ARP resolved. `TTL=127` shows the traffic crossed the router.
+*The same ping that failed before now works. The first attempt timed out while ARP resolved. `TTL=127` shows the traffic crossed the router.*
 
 ![Ping routed](images/16-ping-routed.jpg)
 
@@ -319,7 +319,7 @@ On `BANKSIA-R1` I set the hostname and domain name first, then an enable secret 
 
 Remote login over SSH from the Admin PC did not work in Packet Tracer, so I made the backup from the router's console instead.
 
-Caption: `copy running-config tftp` to 10.10.20.20, with 1164 bytes copied.
+*`copy running-config tftp` to 10.10.20.20, with 1164 bytes copied.*
 
 ![TFTP backup](images/17-device-mgmt-tftp-backup.jpg)
 
@@ -331,13 +331,13 @@ Caption: `copy running-config tftp` to 10.10.20.20, with 1164 bytes copied.
 
 A PC is on but can't reach anything. Its switch port had been put in the wrong VLAN. I moved Fa0/1, the Clinical PC's port, into VLAN 20. The PC kept its 10.10.10.10 address, so its port and its address no longer matched.
 
-Caption: Fa0/1 sits under Admin in `show vlan brief`, and pings to the gateway (10.10.10.1) and to Admin (10.10.20.10) both fail.
+*Fa0/1 sits under Admin in `show vlan brief`, and pings to the gateway (10.10.10.1) and to Admin (10.10.20.10) both fail.*
 
 ![VLAN mismatch broken](images/26-vlan-mismatch-broken.jpg)
 
 I put Fa0/1 back in VLAN 10.
 
-Caption: Fa0/1 back under Clinical, and both pings get replies.
+*Fa0/1 back under Clinical, and both pings get replies.*
 
 ![VLAN mismatch fixed](images/27-vlan-mismatch-fixed.jpg)
 
@@ -355,7 +355,7 @@ Verified: ping 10.10.10.1 and ping 10.10.20.10: 4 of 4 replies.
 
 A cable gets knocked out and a PC drops off the network. I removed the cable on Fa0/2 (the Admin PC), checked `show interfaces status` and pinged from the Clinical PC, then reconnected a straight-through cable and checked again.
 
-Caption: broken on top (Fa0/2 `notconnect`, ping at 100% loss) and fixed below (Fa0/2 `connected`, ping at 0% loss).
+*Broken on top (Fa0/2 `notconnect`, ping at 100% loss) and fixed below (Fa0/2 `connected`, ping at 0% loss).*
 
 ![Link down before and after](images/28-linkdown-before-after.jpg)
 
@@ -378,11 +378,11 @@ I set up a tunnel between my laptop (the host, acting as the VPN server) and PC0
 - **AllowedIPs = 10.8.0.1/32** on PC01 sends only tunnel traffic through the VPN, so PC01's normal internet and domain DNS stay outside it.
 - **Host firewall:** I allowed UDP 51820 for the VPN and ICMPv4 from 10.8.0.0/24 only, for ping.
 
-Caption: both tunnel configs. The private keys are covered, and the public keys are safe to show.
+*Both tunnel configs. The private keys are covered, and the public keys are safe to show.*
 
 ![WireGuard configs](images/18-wg-configs.jpg)
 
-Caption: PC01's tunnel active with a recent handshake, and four replies from 10.8.0.1 with 0% loss.
+*PC01's tunnel active with a recent handshake, and four replies from 10.8.0.1 with 0% loss.*
 
 ![WireGuard handshake and ping](images/19-wg-handshake-ping.jpg)
 
