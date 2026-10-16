@@ -1,6 +1,6 @@
 # Module 5: Network and Internet Connection Support
 
-Banksia Aged Care is a fictional aged care provider with three sites. In this module I build its network side: DHCP and DNS on a Windows domain controller, five fault-finding scenarios on a Windows 11 PC, VLANs and a router in Packet Tracer, a small-office Wi-Fi router, a WAN link between two sites, and a VPN tunnel.
+Banksia Aged Care is a fictional aged care provider with three sites. In this module I build its network side: DHCP and DNS on a Windows domain controller, six fault-finding scenarios from a full DHCP scope to a cable pulled out, VLANs and a router in Packet Tracer, a small-office Wi-Fi router, a WAN link between two sites, and a VPN tunnel.
 
 The skills come from my studies, and I built every part of this myself for Banksia. Some parts run on real virtual machines and some are simulated in Cisco Packet Tracer. The table below says which is which.
 
@@ -12,7 +12,7 @@ The skills come from my studies, and I built every part of this myself for Banks
 | 5. VLANs, router and backup | Packet Tracer | Simulated |
 | 6. VLAN mismatch and cable down | Packet Tracer | Simulated |
 | 7. WireGuard VPN | My laptop and PC01 | Real, both ends on one machine |
-| 8. Read-up notes | None | Read up on, not done in the lab |
+| 8. Extra notes | None | Reference notes |
 
 ## Subnet plan
 
@@ -38,8 +38,7 @@ The skills come from my studies, and I built every part of this myself for Banks
 **Setup notes**
 - I turned off VMware's own DHCP on VMnet8 so DC01 is the only DHCP server on the lab network. The VMnet8 subnet is 192.168.126.0/24 and the NAT gateway is 192.168.126.2.
 - Windows Server blocks ping by default, so I enabled the rule "File and Printer Sharing (Echo Request - ICMPv4-In)" on DC01. Without it, the "can I ping the server?" test would fail for the wrong reason.
-- I took a snapshot of both VMs before starting, and another before the troubleshooting tickets.
-- Ticketing is covered in Module 1. In this module the work notes are written as text blocks, labelled "written for this lab, not logged in ServiceNow".
+- I took a snapshot of both VMs before starting, and another before the troubleshooting scenarios.
 
 ## Key terms
 
@@ -91,7 +90,7 @@ These are my notes on the basics behind everything else in this module.
 | 4 Transport | Ports, and reliable (TCP) or fast (UDP) delivery | WireGuard using UDP port 51820 |
 | 3 Network | IP addressing and routing between networks | The router and the IP addresses, like 10.10.20.1 |
 | 2 Data link | MAC addresses, switching and VLANs | The switch and the VLANs on BANKSIA-SW1 |
-| 1 Physical | Cables, ports and signals | The cable on Fa0/2 that I unplugged in Ticket 6 |
+| 1 Physical | Cables, ports and signals | The cable on Fa0/2 that I unplugged in Scenario 5 |
 
 ---
 
@@ -148,7 +147,7 @@ Caption: PC01 back on a valid address (192.168.126.104) with the right gateway, 
 
 ![Scope fixed](images/07-scope-fixed.jpg)
 
-**Work note (written for this lab, not logged in ServiceNow)**
+**Troubleshooting notes**
 ```
 Issue: PC cannot get an IP address.
 Checked: ipconfig on PC01 showed an APIPA address (169.254.239.228), no gateway.
@@ -164,9 +163,9 @@ Verified: ipconfig /release and /renew gave 192.168.126.104, gateway 192.168.126
 
 For each fault I used the same method, going from near to far: `ipconfig /all`, ping the gateway, `ping 8.8.8.8`, `nslookup google.com`, `tracert 8.8.8.8`. Each result narrows down where the fault sits.
 
-### Ticket 1: wrong gateway
+### Scenario 1: wrong gateway
 
-**Scenario:** a nurse at the nurses' station can open the shared drive but not the internet. PC01 was set to a static IP of 192.168.126.150 with a gateway of 192.168.126.99, where nothing exists.
+A nurse at the nurses' station can open the shared drive but not the internet. PC01 was set to a static IP of 192.168.126.150 with a gateway of 192.168.126.99, where nothing exists.
 
 Caption: broken. The gateway is .99, DC01 answers, `ping 8.8.8.8` is 100% loss and `tracert` stops at the first hop.
 
@@ -178,7 +177,7 @@ Caption: fixed. The gateway answers, 8.8.8.8 answers, google.com resolves, and `
 
 ![Gateway fixed](images/21-gateway-fixed.jpg)
 
-**Work note (written for this lab, not logged in ServiceNow)**
+**Troubleshooting notes**
 ```
 Issue: no internet from PC01; the shared drive works.
 Checked: ipconfig /all showed IP 192.168.126.150, gateway 192.168.126.99, DNS 192.168.126.10.
@@ -189,9 +188,9 @@ Fix: set the gateway to 192.168.126.2.
 Verified: ping 192.168.126.2 and 8.8.8.8 4 of 4 replies, google.com resolves, tracert hop 1 = 192.168.126.2.
 ```
 
-### Ticket 2: wrong DNS
+### Scenario 2: wrong DNS
 
-**Scenario:** the internet shows as connected, but no websites open. The gateway was correct, and DNS was set to 192.168.126.99.
+The internet shows as connected, but no websites open. The gateway was correct, and DNS was set to 192.168.126.99.
 
 Caption: broken. `ping 8.8.8.8` works, `nslookup google.com` times out against .99, and `nslookup google.com 8.8.8.8` works, which isolates the fault to the DNS setting.
 
@@ -203,7 +202,7 @@ Caption: fixed. DNS is .10 and google.com resolves straight away.
 
 ![DNS fixed](images/23-dns-fixed.jpg)
 
-**Work note (written for this lab, not logged in ServiceNow)**
+**Troubleshooting notes**
 ```
 Issue: websites do not open; internet otherwise connected.
 Checked: gateway 192.168.126.2 replies, ping 8.8.8.8 works.
@@ -214,9 +213,9 @@ Fix: DNS set to 192.168.126.10, ipconfig /flushdns.
 Verified: ping 8.8.8.8 4 of 4, nslookup google.com resolved via 192.168.126.10.
 ```
 
-### Ticket 4: IP conflict
+### Scenario 3: IP conflict
 
-**Scenario:** a PC says there is an address problem and the connection is unreliable. I gave PC01 the static address 192.168.126.10, which is DC01's address. I set it in the network adapter window, so any popup would show. None appeared, so the evidence came from other places.
+A PC says there is an address problem and the connection is unreliable. I gave PC01 the static address 192.168.126.10, which is DC01's address. I set it in the network adapter window, so any popup would show. None appeared, so the evidence came from other places.
 
 Caption: `arp -a` on PC01. The interface line shows the 169.254 fallback address, and .10 maps to a different MAC (00-0c-29-98-be-ae) from PC01's own (00-50-56-2d-87-d7).
 
@@ -232,7 +231,7 @@ Caption: PC01 back on DHCP with 192.168.126.104, gateway .2, DHCP server .10 and
 
 ![IP conflict fixed](images/25-ipconflict-fixed.jpg)
 
-**Work note (written for this lab, not logged in ServiceNow)**
+**Troubleshooting notes**
 ```
 Issue: PC cannot connect reliably after an address change.
 Checked: PC01 was set to static 192.168.126.10 (no popup appeared).
@@ -327,9 +326,9 @@ Caption: `copy running-config tftp` to 10.10.20.20, with 1164 bytes copied.
 
 ## 6. VLAN mismatch and link down (Packet Tracer, simulated)
 
-### Ticket 5: VLAN mismatch
+### Scenario 4: VLAN mismatch
 
-**Scenario:** a PC is on but can't reach anything. Its switch port had been put in the wrong VLAN. I moved Fa0/1, the Clinical PC's port, into VLAN 20. The PC kept its 10.10.10.10 address, so its port and its address no longer matched.
+A PC is on but can't reach anything. Its switch port had been put in the wrong VLAN. I moved Fa0/1, the Clinical PC's port, into VLAN 20. The PC kept its 10.10.10.10 address, so its port and its address no longer matched.
 
 Caption: Fa0/1 sits under Admin in `show vlan brief`, and pings to the gateway (10.10.10.1) and to Admin (10.10.20.10) both fail.
 
@@ -341,7 +340,7 @@ Caption: Fa0/1 back under Clinical, and both pings get replies.
 
 ![VLAN mismatch fixed](images/27-vlan-mismatch-fixed.jpg)
 
-**Work note (written for this lab, not logged in ServiceNow)**
+**Troubleshooting notes**
 ```
 Issue: Clinical PC cannot reach its gateway or any other host.
 Checked: show vlan brief showed Fa0/1 in VLAN 20 (Admin), not VLAN 10 (Clinical).
@@ -351,15 +350,15 @@ Fix: interface fa0/1, switchport access vlan 10.
 Verified: ping 10.10.10.1 and ping 10.10.20.10: 4 of 4 replies.
 ```
 
-### Ticket 6: link down
+### Scenario 5: link down
 
-**Scenario:** a cable gets knocked out and a PC drops off the network. I removed the cable on Fa0/2 (the Admin PC), checked `show interfaces status` and pinged from the Clinical PC, then reconnected a straight-through cable and checked again.
+A cable gets knocked out and a PC drops off the network. I removed the cable on Fa0/2 (the Admin PC), checked `show interfaces status` and pinged from the Clinical PC, then reconnected a straight-through cable and checked again.
 
 Caption: broken on top (Fa0/2 `notconnect`, ping at 100% loss) and fixed below (Fa0/2 `connected`, ping at 0% loss).
 
 ![Link down before and after](images/28-linkdown-before-after.jpg)
 
-**Work note (written for this lab, not logged in ServiceNow)**
+**Troubleshooting notes**
 ```
 Issue: Admin PC unreachable.
 Checked: show interfaces status showed Fa0/2 notconnect. ping 10.10.20.10 from the Clinical PC: 100% loss.
@@ -392,9 +391,9 @@ If a user says their VPN won't connect, these are the checks: are the keys right
 
 ---
 
-## 8. Read-up notes
+## 8. Extra notes
 
-Everything in this section is **read up on, not done in the lab**. I didn't have the hardware, so these are my notes from reading, and I'm not claiming hands-on experience with them.
+Some more topics that go with this module.
 
 **Cabling**
 - **T568A vs T568B:** two standards for the order of the eight wires in an RJ45 plug. Either works as long as both ends of a cable use the same one, so the key is to pick one and use it everywhere.
@@ -404,7 +403,7 @@ Everything in this section is **read up on, not done in the lab**. I didn't have
 **Racks and patch panels**
 - **Patch panel and punch-down:** the cables from the wall sockets end at a patch panel in the comms room. A punch-down tool pushes each wire into its slot on the back of the panel. Short patch leads then connect the front of the panel to the switch.
 - **Rack units:** a rack is 19 inches wide, and equipment height is measured in rack units (U). One U is 44.45 mm (1.75 inches), so a typical switch is 1U.
-- **Cable management and layout:** label both ends of every cable, use velcro rather than tight zip ties, and don't bend cables sharply. As I understand it, heavy gear like a UPS goes at the bottom of the rack, with the patch panel and switches higher up.
+- **Cable management and layout:** label both ends of every cable, use velcro rather than tight zip ties, and don't bend cables sharply. Heavy gear like a UPS usually goes at the bottom of the rack, with the patch panel and switches higher up.
 
 **Cable tracing and testing**
 - **Toner and probe:** a tone generator on one end of a cable sends a signal, and a probe at the other end finds which cable it is, so you can trace one cable in a bundle.
