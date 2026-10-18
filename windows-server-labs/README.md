@@ -41,4 +41,4 @@ VM sizing and nested virtualisation, a 2-node failover cluster on iSCSI shared s
 - [`scripts/docker-compose.yml`](scripts/docker-compose.yml): the WordPress, MySQL and XAMPP stack
 - `images/`: screenshots used on both pages
 
-Related module: [Module 3 – Active Directory](../module-03-active-directory/)
+Related module: [Module 3 - Active Directory](../module-03-active-directory/)
