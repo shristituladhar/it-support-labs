@@ -2,29 +2,15 @@
 
 Hands-on Windows Server administration across two areas: **Active Directory** and **Hyper-V / failover clustering**. Each page covers the scenario, what I built, the commands I used, how I checked it worked, and what went wrong along the way.
 
-<table>
-  <tr>
-    <td align="center" width="50%">
-      <a href="active-directory.md"><img src="images/11-ad-design-topology.png" alt="AD design topology"></a><br>
-      <b><a href="active-directory.md">Active Directory →</a></b><br>
-      <sub>Root domain, two child domains, RODC, OUs and Group Policy</sub>
-    </td>
-    <td align="center" width="50%">
-      <a href="hyper-v.md"><img src="images/40-change-updated-architecture.png" alt="Failover cluster architecture"></a><br>
-      <b><a href="hyper-v.md">Hyper-V and Failover Clustering →</a></b><br>
-      <sub>2-node cluster, iSCSI shared storage, live migration</sub>
-    </td>
-  </tr>
-</table>
+## [Active Directory →](active-directory.md)
+Root domain with two child domains, a read-only DC, OUs and Group Policy. Also offline domain join, account lockouts, and DC install from media.
 
-## Highlights
-<table>
-  <tr>
-    <td align="center" width="33%"><img src="images/34-live-migration-in-progress.png" alt="Live migration"><br><sub>Live-migrating a running VM between cluster nodes</sub></td>
-    <td align="center" width="33%"><img src="images/18-app-blocked-for-user.png" alt="App blocked by GPO"><br><sub>App blocked for one user by Group Policy</sub></td>
-    <td align="center" width="33%"><img src="images/02-djoin-offline-join.png" alt="Offline domain join"><br><sub>Joining a server to the domain offline</sub></td>
-  </tr>
-</table>
+![AD design topology](images/11-ad-design-topology.png)
+
+## [Hyper-V and Failover Clustering →](hyper-v.md)
+VM sizing and nested virtualisation, a 2-node failover cluster on iSCSI shared storage, live migration, changes on the live cluster, and Docker on the clustered server.
+
+![Failover cluster architecture](images/40-change-updated-architecture.png)
 
 ## Skills covered
 | Area | What I did |
