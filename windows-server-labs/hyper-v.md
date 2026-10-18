@@ -97,7 +97,7 @@ I kept storage and heartbeat traffic on their own networks. That way, heavy disk
 7. Brought the disks online, added them to the cluster, and converted them to Cluster Shared Volumes
 8. Created the AppServer VM on the CSV, made it highly available, and live-migrated it from VH1 to VH2
 
-Full commands: [build-cluster.ps1](build-cluster.ps1) (passwords replaced with placeholders)
+Full commands: [build-cluster.ps1](scripts/build-cluster.ps1) (passwords replaced with placeholders)
 
 ### Key commands
 ```powershell
@@ -191,7 +191,7 @@ Run a web application (WordPress with a MySQL database) as containers on the hig
 
 ### What I did
 1. Installed Docker Desktop and the Windows Containers feature, then switched Docker to Linux containers
-2. Wrote a [docker-compose.yml](docker-compose.yml) with MySQL, WordPress and XAMPP on one bridge network
+2. Wrote a [docker-compose.yml](scripts/docker-compose.yml) with MySQL, WordPress and XAMPP on one bridge network
 3. Added a Windows NAT for the lab subnet so the containers could be reached
 4. Started the stack and checked each service
 5. Committed the customised WordPress container to an image, pushed it to Docker Hub, and pulled it back to redeploy
