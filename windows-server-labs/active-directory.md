@@ -1,39 +1,54 @@
 # Active Directory
 
-Windows Server 2016 domain: PLABDC01 (DC), PLABDM01, PLABSA01, PLABDCORE01 (Server Core) and PLABWIN10 (client).
+**Environment:** Windows Server 2016 domain `practicelabs.com`. PLABDC01 (domain controller), PLABDM01 and PLABSA01 (member servers), PLABDCORE01 (Server Core) and PLABWIN10 (Windows 10 client).
 
 ## Contents
-
-- [AD account management and offline domain join](#ad-account-management-and-offline-domain-join)
-- [Install from Media (IFM), RODC and password replication policy](#install-from-media-ifm-rodc-and-password-replication-policy)
-- [AD design, deployment and Group Policy](#ad-design-deployment-and-group-policy)
+- [1. Account management and offline domain join](#1-account-management-and-offline-domain-join)
+- [2. IFM, RODC and password replication](#2-ifm-rodc-and-password-replication)
+- [3. AD design and Group Policy](#3-ad-design-and-group-policy)
 
 ---
 
-## AD account management and offline domain join
+## 1. Account management and offline domain join
+
+### Scenario
+A server needs to rejoin the domain while it can't reach a domain controller. The domain also needs account lockout protection and a way to find accounts that are locked, disabled or unused.
 
 ### What I did
-- Removed PLABSA01 from the domain, then deleted its computer object in ADUC
-- On the DC, ran `djoin /provision` to pre-create the computer account and save a blob file
-- Paused the DC, so PLABSA01 couldn't reach it, and joined PLABSA01 offline with `djoin /requestODJ`
-- Resumed the DC and confirmed PLABSA01 was back in the domain
+**Offline domain join**
+1. Removed PLABSA01 from the domain and deleted its computer object in ADUC
+2. On the DC, ran `djoin /provision` to pre-create the computer account and save it to a blob file
+3. Copied the blob to PLABSA01 over a mapped network drive
+4. Paused the DC so PLABSA01 had no DC to talk to, then ran `djoin /requestODJ` and restarted
+5. Resumed the DC and confirmed PLABSA01 was back in the domain
+
+**Account lockout and clean-up**
 - Set an account lockout threshold in Group Policy, then locked a test user out on purpose from the Windows 10 client
-- Used PowerShell to find locked, disabled and inactive accounts, and re-enabled a disabled one
-- Set "Allow log on locally" and "Allow log on through Remote Desktop Services" rights for specific groups
+- Used PowerShell to find locked-out, disabled and inactive accounts, and re-enabled a disabled account
 
-### Commands I used
+**User rights**
+- Set "Allow log on locally" and "Allow log on through Remote Desktop Services" for specific security groups, and added a group to Remote Desktop Users
+
+### Commands
 ```powershell
-djoin /provision /domain practicelabs.com /machine PLABSA01 /savefile c:\plabsa01.txt
-djoin /requestODJ /loadfile c:\plabsa01.txt /windowspath %SystemRoot% /localos
+# Offline domain join
+djoin /provision /domain practicelabs.com /machine PLABSA01 /savefile c:\plabsa01.txt   # on the DC
+djoin /requestODJ /loadfile c:\plabsa01.txt /windowspath %SystemRoot% /localos         # on PLABSA01
+shutdown /r /t 0
 
+# Account checks
 Search-ADAccount -LockedOut
 Search-ADAccount -AccountDisabled
 Enable-ADAccount -Identity <username>
 Search-ADAccount -AccountInactive -UsersOnly -TimeSpan 1.00:00:00 | ft name
 ```
 
-### Why this matters for support
-Locked-out accounts are one of the most common service desk tickets. Offline domain join is useful when a machine is being built somewhere it can't reach a DC.
+### How I checked it worked
+- PLABSA01 showed under Computers in ADUC after the restart, without ever contacting the DC during the join
+- The client showed the "account is locked out" message, and `Search-ADAccount -LockedOut` returned that user
+
+### Where this applies
+Lockouts are one of the most common service desk tickets. Offline join is useful when a machine is built somewhere it can't reach a DC, like an imaging network or a remote site.
 
 ### Screenshots
 **Computer account pre-provisioned on the DC with djoin**
@@ -62,27 +77,43 @@ Locked-out accounts are one of the most common service desk tickets. Offline dom
 
 ---
 
-## Install from Media (IFM), RODC and password replication policy
+## 2. IFM, RODC and password replication
+
+### Scenario
+Add domain controllers without copying the whole AD database over the network, and set up a read-only DC for a less secure site that only caches the passwords it needs.
 
 ### What I did
-- Created IFM media on the existing DC with `ntdsutil`
-- Promoted PLABDM01 to a DC using that media, so it didn't have to pull the whole AD database over the network
-- Installed a read-only domain controller (RODC) on PLABSA01 with PowerShell
-- Set up its password replication policy: created a group, added it to the Allowed RODC Password Replication Group, and prepopulated passwords for specific users
+**Install from media (IFM)**
+1. On PLABDC01, created IFM media with `ntdsutil`, which takes a snapshot of the AD database and SYSVOL
+2. Shared the media to PLABDM01 and promoted it to a domain controller using that copy, so only changes since the snapshot had to replicate
 
-### Commands I used
+**Read-only domain controller**
+1. Installed AD DS on PLABSA01 and promoted it as an RODC with PowerShell
+2. Created a "VPN Users" group and added it to the Allowed RODC Password Replication Group
+3. Set the RODC's password replication policy and prepopulated passwords for specific users, so they can log on at that site even if the link to a writable DC is down
+
+### Commands
 ```
-ntdsutil "activate instance ntds" ifm "create sysvol full C:\IFM" quit quit
+ntdsutil
+  activate instance ntds
+  ifm
+  create sysvol full C:\IFM
 ```
 ```powershell
-Install-ADDSDomainController -DomainName practicelabs.com -ReadOnlyReplica -SiteName "Default-First-Site-Name" -Credential (Get-Credential)
+Install-WindowsFeature AD-Domain-Services -IncludeManagementTools
+Install-ADDSDomainController -DomainName practicelabs.com -ReadOnlyReplica `
+  -SiteName "Default-First-Site-Name" -Credential (Get-Credential)
 ```
 
-### Troubleshooting
-The test user didn't show under "Accounts that have been authenticated to this RODC" because the Windows 10 client failed to log on with a domain trust relationship error. The fix for that is `Test-ComputerSecureChannel -Repair` on the client.
+### How I checked it worked
+- Both new DCs showed under Domain Controllers in ADUC, with PLABSA01 as read-only
+- The Advanced Password Replication Policy on the RODC showed which accounts' passwords were stored
 
-### Why this matters
-An RODC is what you'd put in a branch office with weak physical security. It doesn't store everyone's passwords, only the ones you allow.
+### Troubleshooting
+The test user didn't show under "Accounts that have been authenticated to this RODC". The Windows 10 client failed to log on with a domain trust relationship error, so the RODC never saw an authentication from it. The fix for a broken trust is `Test-ComputerSecureChannel -Repair` on the client, or rejoining it to the domain.
+
+### Where this applies
+An RODC goes in a branch office with weak physical security. If it's stolen, only the passwords you allowed are exposed. IFM saves bandwidth when building DCs at sites with slow links.
 
 ### Screenshots
 **IFM media created with ntdsutil**
@@ -103,31 +134,52 @@ An RODC is what you'd put in a branch office with weak physical security. It doe
 
 ---
 
-## AD design, deployment and Group Policy
+## 3. AD design and Group Policy
 
-### Goal
-Build a domain structure across four servers and a Windows 10 client: a root domain, child domains for two sites, a read-only DC, OUs and users. Then use Group Policy to control what software users can run.
+### Scenario
+Design and build a domain for one head office and two sites, then use Group Policy to control what users can run.
 
-### My design
-- **Root domain:** `practicelabs.com` on PLABDC01 (Sydney). This is the main DNS and authentication server
-- **Child domains:** MEL (on PLABDM01) and BNE (on PLABSA01), one per site
-- **RODC:** PLABDCORE01 (Server Core) in the root domain
-- **OUs:** one for standard users, one for admin users
+### Design
+| Server | Role |
+|---|---|
+| PLABDC01 | Root domain `practicelabs.com` (Sydney), primary DNS and authentication |
+| PLABDM01 | Child domain DC for MEL |
+| PLABSA01 | Child domain DC for BNE |
+| PLABDCORE01 | Read-only DC on Server Core |
+| PLABWIN10 | Domain client for testing |
 
-### What I built
-- Promoted the child domains and the RODC entirely in PowerShell
-- Created OUs and users with `dsadd`: a standard user who has to change password at first logon, and an admin user whose password never expires
-- **Software GPO:** "Don't run specified Windows applications", linked to the standard users' OU
-- **Computer GPO:** "Turn off the Store application", linked to the client
-- Checked both with `gpupdate /force` and `gpresult /r`
+I used two OUs, one for standard users and one for admin users, so policies could target each group separately.
 
+### What I did
+1. Promoted both child domains and the RODC entirely in PowerShell
+2. Created the OUs and users with `dsadd`:
+   - a standard user who must change their password at first logon
+   - an admin user (in Domain Admins) whose password never expires
+3. **User GPO:** "Don't run specified Windows applications", linked to the standard users' OU
+4. **Computer GPO:** "Turn off the Store application", linked to the Windows 10 client
+5. Ran `gpupdate /force` and tested both users on the client
+
+### Commands
 ```powershell
-Install-ADDSDomain -DomainType ChildDomain -NewDomainName MEL -ParentDomainName practicelabs.com -InstallDNS -Credential (Get-Credential)
-Install-ADDSDomainController -DomainName practicelabs.com -ReadOnlyReplica -SiteName "Default-First-Site-Name" -Credential (Get-Credential)
+Install-ADDSDomain -DomainType ChildDomain -NewDomainName MEL -ParentDomainName practicelabs.com `
+  -InstallDNS -Credential (Get-Credential)
+Install-ADDSDomainController -DomainName practicelabs.com -ReadOnlyReplica `
+  -SiteName "Default-First-Site-Name" -Credential (Get-Credential)
+
+gpupdate /force
+gpresult /r
 ```
 
+### How I checked it worked
+- The blocked app was stopped for the standard user but still opened for the admin user, because the user policy only applied to the standard users' OU
+- The Store was blocked for both users, because that one was a computer policy and applies to anyone on that machine
+- `gpresult /r` listed which GPOs applied to each user
+
 ### Troubleshooting
-The plan was to block Microsoft Edge with a GPO, but blocking `msedge.exe` did nothing. When I checked the shortcut, Edge on that Windows 10 build was a UWP app (`Microsoft.MicrosoftEdge_8wekyb3d8bbwe`) with no .exe on disk for the policy to match. "Don't run specified applications" only matches executable names. I switched the policy to `iexplore.exe` to prove the GPO worked. In a real environment I'd block a UWP app with AppLocker packaged-app rules instead.
+Blocking Microsoft Edge with "Don't run specified Windows applications" did nothing. Checking the Edge shortcut showed it was a UWP app (`Microsoft.MicrosoftEdge_8wekyb3d8bbwe`) with no `.exe` on disk, and that policy only matches executable names. I pointed the policy at `iexplore.exe` instead to prove the GPO worked. Blocking a UWP app properly needs AppLocker packaged-app rules.
+
+### Where this applies
+"Why can this user still open X?" is a common Group Policy ticket. The fix usually comes down to checking scope (user vs computer, which OU), then confirming what applied with `gpresult`.
 
 ### Screenshots
 **AD design**
@@ -177,5 +229,3 @@ The plan was to block Microsoft Edge with a GPO, but blocking `msedge.exe` did n
 **gpresult /r confirming the policies applied**
 
 ![gpresult /r confirming the policies applied](images/22-gpresult-r.png)
-
-
