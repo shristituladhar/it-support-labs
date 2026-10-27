@@ -61,7 +61,7 @@ Test users: Fred Luddy and Jade Erlebach (Clinical Staff), Beth Anglin (Care Man
 | Management | – | Modify | – | – |
 | Policies | Read | Modify | Read | Read |
 
-`icacls` on the Admin folder (`M` = Modify, `RX` = Read, `F` = Full Control):
+`icacls` on the Admin folder (`M` = Modify, `RX` = Read & Execute, `F` = Full Control):
 ```
 E:\Shares\Departments\Admin BANKSIA\Care Managers:(OI)(CI)(RX)
                             BANKSIA\Admin Office:(OI)(CI)(M)
