@@ -70,15 +70,15 @@ E:\Shares\Departments\Admin BANKSIA\Care Managers:(OI)(CI)(RX)
                             CREATOR OWNER:(OI)(CI)(IO)(F)
 ```
 
-*NTFS permissions on Clinical: inheritance off, Clinical Staff and Care Managers with Modify.*
+**NTFS permissions on Clinical:** inheritance off, Clinical Staff and Care Managers with Modify.
 
 ![NTFS on Clinical](images/01-ntfs-clinical.jpg)
 
-*Effective Access for Fred: Modify on Clinical, no access to Admin.*
+**Effective Access for Fred:** Modify on Clinical, no access to Admin.
 
 ![Effective Access](images/02-effective-access.png)
 
-*Signed in as Fred: he sees only Clinical and Policies, and typing the Admin path is refused. Hiding a folder isn't the lock; NTFS is.*
+**Signed in as Fred:** he sees only Clinical and Policies, and typing the Admin path is refused. Hiding a folder isn't the lock; NTFS is.
 
 ![Fred's view and denied](images/03-fred-view-denied.jpg)
 
@@ -89,13 +89,17 @@ E:\Shares\Departments\Admin BANKSIA\Care Managers:(OI)(CI)(RX)
 - GPO **Staff - Drive Maps**, linked to the Staff OU. Drive maps are user settings, so the GPO goes where the user accounts are.
 - **S:** for all staff. **M:** (Management) only for Care Managers, using item-level targeting.
 
-*The two drive maps, and the targeting rule for M:.*
+**The two drive maps, and the targeting rule for M:**
 
 ![GPO drive maps](images/04-gpo-drive-maps.jpg)
 
-| Fred (Clinical Staff): S: only | Beth (Care Manager): S: and M: |
-|---|---|
-| ![Fred's drives](images/05a-drive-fred.jpg) | ![Beth's drives](images/05b-drive-beth.jpg) |
+**Fred (Clinical Staff):** S: only
+
+![Fred's drives](images/05a-drive-fred.jpg)
+
+**Beth (Care Manager):** S: and M:
+
+![Beth's drives](images/05b-drive-beth.jpg)
 
 ## Part 3: Previous Versions (deleted file)
 
@@ -103,7 +107,7 @@ E:\Shares\Departments\Admin BANKSIA\Care Managers:(OI)(CI)(RX)
 
 Turned on shadow copies for E:. Fred deleted `Roster-Week42.txt`, and I got it back through **Clinical > Properties > Previous Versions > Open**, copying just that file. I didn't use **Restore**, because it rolls back the whole folder and could undo other people's work.
 
-*The snapshot list and the recovered file.*
+**The snapshot list and the recovered file:**
 
 ![Previous Versions](images/06-previous-versions.jpg)
 
@@ -133,9 +137,13 @@ Fix: Added her back, then she signed out and in.
 Verified: S: showed Clinical and Policies, and whoami /groups listed Clinical Staff.
 ```
 
-| Before: S: empty, no Clinical Staff group | After: folders back, group listed |
-|---|---|
-| ![Before](images/07a-s1-before.jpg) | ![After](images/07b-s1-after.jpg) |
+**Before:** S: empty, no Clinical Staff group
+
+![Before](images/07a-s1-before.jpg)
+
+**After:** folders back, group listed
+
+![After](images/07b-s1-after.jpg)
 
 ### Scenario 2: "I can open files but not save"
 ```
@@ -146,9 +154,13 @@ Fix: Set the share back to Full Control for Authenticated Users.
 Verified: Get-SmbShareAccess showed Full, and Fred could save.
 ```
 
-| Before: save refused while the share was Read | Fix: share set to Read (red), then back to Full (green) |
-|---|---|
-| ![Before](images/08a-s2-before.jpg) | ![After](images/08b-s2-after.jpg) |
+**Before:** save refused while the share was Read
+
+![Before](images/08a-s2-before.jpg)
+
+**Fix:** share set to Read (red), then back to Full (green)
+
+![After](images/08b-s2-after.jpg)
 
 ### Scenario 3: "Network path not found"
 ```
@@ -160,9 +172,13 @@ Verified: Port 445 showed True and the share opened.
 ```
 My first attempt, disabling the standard "File and Printer Sharing (SMB-In)" rule, didn't block anything. A domain controller has other rules that also allow 445, so I used a block rule instead. I only caught this by testing the port after the change rather than assuming it worked.
 
-| Before: ping works, port 445 fails, no S: | After: port 445 open, share opens |
-|---|---|
-| ![Before](images/09a-s3-before.jpg) | ![After](images/09b-s3-after.jpg) |
+**Before:** ping works, port 445 fails, no S:
+
+![Before](images/09a-s3-before.jpg)
+
+**After:** port 445 open, share opens
+
+![After](images/09b-s3-after.jpg)
 
 ### Scenario 4: "My S: drive has gone"
 ```
@@ -173,9 +189,13 @@ Fix: Moved him back to Staff\Clinical, then he signed out and in.
 Verified: S: was back, and gpresult listed Staff - Drive Maps.
 ```
 
-| Before: Fred in the IT OU, no GPOs, no S: | After: back in Staff, policy applied, S: back |
-|---|---|
-| ![Before](images/10a-s4-before.jpg) | ![After](images/10b-s4-after.jpg) |
+**Before:** Fred in the IT OU, no GPOs, no S:
+
+![Before](images/10a-s4-before.jpg)
+
+**After:** back in Staff, policy applied, S: back
+
+![After](images/10b-s4-after.jpg)
 
 ---
 
@@ -186,7 +206,7 @@ Verified: S: was back, and gpresult listed Staff - Drive Maps.
 - PC02 (the reception PC) is not on the domain, so it doesn't know Fred's Banksia login. I created a **local** account for Fred on PC02.
 - Shared `C:\Visitor Logs` with **Read** for Fred, and turned on sharing for Private networks.
 
-*PC02: Fred's local account, the Visitor Logs folder, and the share set to Read.*
+**PC02:** Fred's local account, the Visitor Logs folder, and the share set to Read.
 
 ![Share setup](images/11a-workgroup-share-setup.jpg)
 
@@ -198,9 +218,13 @@ Fix: Re-cloned PC02 and ran Sysprep with Generalize to give it a unique SID.
 Verified: Fred opened the visitor log from PC01, and saving was refused, proving read-only access.
 ```
 
-| Problem: password rejected, Event 6167 on PC02 | After Sysprep: log opens, save refused (read-only) |
-|---|---|
-| ![Duplicate SID](images/11b-duplicate-sid-6167.jpg) | ![Workgroup access](images/11c-workgroup-access.jpg) |
+**Problem:** password rejected, Event 6167 on PC02
+
+![Duplicate SID](images/11b-duplicate-sid-6167.jpg)
+
+**After Sysprep:** log opens, save refused (read-only)
+
+![Workgroup access](images/11c-workgroup-access.jpg)
 
 **What this shows:** in a workgroup, every PC needs its own accounts, so Fred needed a separate login on the reception PC. A cloned Windows PC also needs Sysprep before it can work alongside the original.
 
@@ -216,13 +240,17 @@ Verified: Fred opened the visitor log from PC01, and saving was refused, proving
 - Built a **RAID1 mirror** from the two 5 GB disks (5 GB usable, since everything is stored twice) and formatted it EXT4.
 - Created NAS users `fluddy` (in group `clinical`) and `sdeppert`. Folder permissions: clinical Read/Write, sdeppert No access. Shared over SMB with **Public: No**.
 
-| NAS dashboard: hostname, version, fixed IP | Folder permissions and SMB share (Public: No) |
-|---|---|
-| ![OMV dashboard](images/12-omv-dashboard.jpg) | ![NAS share settings](images/13-nas-share-settings.jpg) |
+**NAS dashboard:** hostname, version, fixed IP
+
+![OMV dashboard](images/12-omv-dashboard.jpg)
+
+**Folder permissions and SMB share (Public: No)**
+
+![NAS share settings](images/13-nas-share-settings.jpg)
 
 **Access test:** Fred opened the share. Sabrina's login was accepted, but `dir` gave **Access is denied**. The NAS knew who she was, but her permissions said no, the same difference between logging in and having access as on DC01.
 
-*Fred's file in the share, and Sabrina denied.*
+**Fred's file in the share, and Sabrina denied:**
 
 ![NAS access denied](images/14-nas-access-denied.jpg)
 
@@ -237,15 +265,27 @@ Rebuild: added a new disk and used Recover in OMV.
 Verified: Mirror clean on two disks, and all files intact.
 ```
 
-| 1. Disk removed: mirror missing | 2. Running on one disk | 3. Rebuilt on two disks |
-|---|---|---|
-| ![Inactive](images/15a-raid-inactive-error.jpg) | ![Degraded](images/15b-raid-degraded.jpg) | ![Rebuilt](images/15c-raid-rebuilt.jpg) |
+**1. Disk removed:** mirror missing
+
+![Inactive](images/15a-raid-inactive-error.jpg)
+
+**2. Running on one disk:** clean, degraded
+
+![Degraded](images/15b-raid-degraded.jpg)
+
+**3. Rebuilt:** clean on two disks
+
+![Rebuilt](images/15c-raid-rebuilt.jpg)
 
 RAID keeps staff working when a disk dies, but it isn't a backup. A deleted file is deleted from both disks at once.
 
-**SMB security on DC01:** SMB1 is off, SMB2/3 is on, and signing is required, so traffic can't be tampered with. Encryption is off.
-
-![SMB security](images/16-smb-security.jpg)
+**SMB security on DC01** (`Get-SmbServerConfiguration`):
+```
+EnableSMB1Protocol EnableSMB2Protocol RequireSecuritySignature EncryptData
+------------------ ------------------ ------------------------ -----------
+             False               True                     True       False
+```
+SMB1 is off, SMB2/3 is on, and signing is required, so traffic can't be tampered with. Encryption is off.
 
 ---
 
