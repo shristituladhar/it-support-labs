@@ -76,7 +76,7 @@ E:\Shares\Departments\Admin BANKSIA\Care Managers:(OI)(CI)(RX)
 
 *Effective Access for Fred: Modify on Clinical, no access to Admin.*
 
-![Effective Access](images/02-effective-access.jpg)
+![Effective Access](images/02-effective-access.png)
 
 *Signed in as Fred: he sees only Clinical and Policies, and typing the Admin path is refused. Hiding a folder isn't the lock; NTFS is.*
 
