@@ -15,7 +15,7 @@ Simulated lab set in **Banksia Aged Care**, the fictional aged care provider fro
 
 Test users: Fred Luddy and Jade Erlebach (Clinical Staff), Beth Anglin (Care Managers), Sabrina Deppert (Admin Office).
 
-**Lab setup:** DC01 is both the domain controller and the file server, the NAS runs as software in a VM, and PC02 is a cloned VM.
+**Lab setup:** DC01 is both the domain controller and the file server, the NAS runs as software in a VM, and PC02 is a cloned VM. In a real company the file server would be a separate machine, because a domain controller holds every account in the domain and shouldn't also run file shares.
 
 ## Key terms
 
@@ -61,7 +61,7 @@ Test users: Fred Luddy and Jade Erlebach (Clinical Staff), Beth Anglin (Care Man
 | Management | – | Modify | – | – |
 | Policies | Read | Modify | Read | Read |
 
-`icacls` on the Admin folder (`M` = Modify, `RX` = Read & Execute, `F` = Full Control):
+`icacls` on the Admin folder (`M` = Modify, `RX` = Read & execute, `F` = Full Control):
 ```
 E:\Shares\Departments\Admin BANKSIA\Care Managers:(OI)(CI)(RX)
                             BANKSIA\Admin Office:(OI)(CI)(M)
@@ -170,7 +170,7 @@ Cause: A firewall rule on DC01 was blocking TCP 445.
 Fix: Removed the block rule.
 Verified: Port 445 showed True and the share opened.
 ```
-My first attempt, disabling the standard "File and Printer Sharing (SMB-In)" rule, didn't block anything. A domain controller has other rules that also allow 445, so I used a block rule instead. I only caught this by testing the port after the change rather than assuming it worked.
+My first attempt, disabling the standard "File and Printer Sharing (SMB-In)" rule, didn't block anything. A domain controller probably has other rules that also allow 445, so I used a block rule instead. I only caught this by testing the port after the change rather than assuming it worked.
 
 **Before:** ping works, port 445 fails, no S:
 
@@ -213,10 +213,12 @@ Verified: S: was back, and gpresult listed Staff - Drive Maps.
 **The problem:** PC01 kept rejecting Fred's PC02 login as "password not correct", even though it was right.
 ```
 Checked: Event Viewer on PC02 showed Event 6167 for each attempt, saying it can happen if a machine was cloned without Sysprep.
-Cause: PC02 was cloned from PC01 without Sysprep, so both had the same SID. Windows updates since August 2025 block sign-ins between PCs with duplicate SIDs.
+Cause: PC02 was cloned from PC01 without Sysprep, so both had the same SID. Windows updates released since late August 2025 (Windows 11 24H2/25H2 and Server 2025) block sign-ins between PCs with duplicate SIDs.
 Fix: Re-cloned PC02 and ran Sysprep with Generalize to give it a unique SID.
 Verified: Fred opened the visitor log from PC01, and saving was refused, proving read-only access.
 ```
+
+Source: [Microsoft: Kerberos and NTLM authentication failures due to duplicate SIDs](https://support.microsoft.com/topic/kerberos-and-ntlm-authentication-failures-due-to-duplicate-sids-76f7394d-c460-4882-9ed1-d27e0960f949)
 
 **Problem:** password rejected, Event 6167 on PC02
 
@@ -279,7 +281,12 @@ Verified: Mirror clean on two disks, and all files intact.
 
 RAID keeps staff working when a disk dies, but it isn't a backup. A deleted file is deleted from both disks at once.
 
-**SMB security on DC01** (`Get-SmbServerConfiguration`):
+**NAS data protection and security**
+- **Disk failure:** RAID1 mirror, tested by removing a disk and rebuilding.
+- **Access control:** local users and groups, folder permissions with no access for others, and the SMB share set to Public: No.
+- **Hardening:** default admin password changed, updates installed, fixed IP.
+
+**SMB security on DC01 (the file server)** (`Get-SmbServerConfiguration`):
 ```
 EnableSMB1Protocol EnableSMB2Protocol RequireSecuritySignature EncryptData
 ------------------ ------------------ ------------------------ -----------
