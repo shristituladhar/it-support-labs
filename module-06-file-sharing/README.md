@@ -204,6 +204,9 @@ Verified: S: was back, and gpresult listed Staff - Drive Maps.
 **Scenario:** Banksia's Eastwood site has no server. Reception keeps the visitor sign-in log, and the night nurse needs to read it, so reception shares the folder from its own PC.
 
 - PC02 (the reception PC) is not on the domain, so it doesn't know Fred's Banksia login. I created a **local** account for Fred on PC02.
+- PC02 is a clone of PC01 taken from a snapshot made before PC01 joined
+  banksia.local (Module 3), so it was never on the domain and has no domain
+  accounts. This is why it doesn't know Fred's Banksia login.
 - Shared `C:\Visitor Logs` with **Read** for Fred, and turned on sharing for Private networks.
 
 **PC02:** Fred's local account, the Visitor Logs folder, and the share set to Read.
@@ -213,7 +216,7 @@ Verified: S: was back, and gpresult listed Staff - Drive Maps.
 **The problem:** PC01 kept rejecting Fred's PC02 login as "password not correct", even though it was right.
 ```
 Checked: Event Viewer on PC02 showed Event 6167 for each attempt, saying it can happen if a machine was cloned without Sysprep.
-Cause: PC02 was cloned from PC01 without Sysprep, so both had the same SID. Windows updates released since late August 2025 (Windows 11 24H2/25H2 and Server 2025) block sign-ins between PCs with duplicate SIDs.
+Cause: PC02 was cloned from PC01 (pre-domain snapshot) without Sysprep, so both had the same SID. Windows updates released since late August 2025 (Windows 11 24H2/25H2 and Server 2025) block sign-ins between PCs with duplicate SIDs.  
 Fix: Re-cloned PC02 and ran Sysprep with Generalize to give it a unique SID.
 Verified: Fred opened the visitor log from PC01, and saving was refused, proving read-only access.
 ```
