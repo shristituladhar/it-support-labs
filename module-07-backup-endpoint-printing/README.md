@@ -1,6 +1,8 @@
 # Module 7: Backup, Endpoint Protection and Printing
 
-This module covers syllabus (Backup, Endpoint Protection, Printers) in one lab, using the Banksia Aged Care scenario. I set up each service, broke it the way it usually breaks at work, and fixed it.
+This module covers three syllabus topics in one lab: Backup, Endpoint Protection and Printers (syllabus Modules 7–9), using the Banksia Aged Care scenario. I set up each service, broke it the way it usually breaks at work, and fixed it.
+
+**Skills shown:** print server setup and print queue troubleshooting, Group Policy (printer deployment with item-level targeting, Defender settings), Microsoft Defender (Protection history, exclusions, PowerShell), Windows Server Backup and `wbadmin`, service accounts, and verifying a restore with `icacls` and file hashes.
 
 **Machines used**
 - **BANKSIA-DC01** (Windows Server 2025): print server, file server, Windows Server Backup
@@ -12,6 +14,8 @@ This module covers syllabus (Backup, Endpoint Protection, Printers) in one lab, 
 ## Part 1: Printing
 
 I don't have a physical printer, so both printers use a local port that writes to a text file instead of an IP address. Everything else is set up the way it would be for a real network printer: the print server, sharing, permissions, Group Policy deployment and the print queue. On a real printer the only change would be a Standard TCP/IP port with the printer's IP.
+
+DC01 is also the print server because the lab has one server. In production the print server would be a separate member server, and the Print Spooler service is normally disabled on domain controllers because of attacks like PrintNightmare.
 
 | Printer | Share | Port | Who can print | Deployed by |
 |---|---|---|---|---|
@@ -30,7 +34,7 @@ When Fred (Clinical Staff) signed in to PC01, the Nurses Station Printer wasn't 
 
 ![GPO printer error, event 4098](images/02a-printers-fred-error.jpg)
 
-Since the 2021 PrintNightmare security changes, normal users can't install printer drivers from a print server, and PC01 didn't have the driver yet. I signed in as a domain admin and connected to the printer once, which installed the driver. After `gpupdate /force`, the policy added the printer for Fred.
+Since the 2021 PrintNightmare security changes, normal users can't install printer drivers from a print server. The most likely cause was that PC01 didn't have the driver yet: I signed in as a domain admin and connected to the printer once, which installs the driver, and after `gpupdate /force` the policy added the printer for Fred.
 
 **In a real workplace:** drivers are put on PCs before printers are deployed, through the software deployment tool (such as Intune) or by using printers with package-aware drivers, so staff never hit this.
 
@@ -135,6 +139,8 @@ A scheduled backup runs as a scheduled task on DC01, so DC01 has to recognise th
 
 Windows warned that a network share keeps only the latest backup, and that backups there can be read by anyone with access to the share. That's why only svc-backup has access to the folder.
 
+**Lab shortcut, not a recommendation:** Backup Operators on a domain controller can read and restore almost any file on the DC, and here the domain and NAS accounts share one password. In production I'd give the account only the rights the backup needs, use a separate password per system kept in a password manager, and deny it interactive logon.
+
 ### Scenario B1: Admin Office's folder was deleted
 
 **Ticket:** "The whole Admin folder on the shared drive is gone."
@@ -206,3 +212,13 @@ This setup has two gaps: the network share keeps only the latest backup, and the
 | Couldn't pick the quarantined file in the Defender exclusion file picker | The file didn't exist while it was in quarantine | Added the exclusion with `Add-MpPreference -ExclusionPath` |
 | Recovery wizard restored the two files loose into `Departments` | Another location was chosen with the files selected instead of the folder; Original location wasn't available | Removed the loose files and restored the folder with `wbadmin start recovery` |
 | `Start-ScheduledTask` couldn't run the backup task | This task doesn't allow on-demand runs | Proved the B2 cause with a credential test and the fix with `wbadmin start backup` |
+
+---
+
+## What I learned
+
+- The same error code can have different causes. Fred and Beth both got "Access denied" (0x5), but one was a missing driver and the other was a missing permission. The checks decided which.
+- A restore isn't proven until you compare it. My first restore said it succeeded, but it put the files in the wrong place without their folder.
+- A scheduled job runs as its own account, so that account has to exist where the job runs, and its password has to stay in sync everywhere it's used.
+- An antivirus exclusion should cover one file, for as short a time as possible.
+- When a GUI wizard does something unexpected, the command-line tool (`wbadmin`) is more precise and shows exactly what it did.
