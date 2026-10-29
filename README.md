@@ -23,5 +23,3 @@ The servers, domain, policies and logs in these labs are real and built by me. T
 - **Ticketing:** ServiceNow Personal Developer Instance
 - **Cloud:** Microsoft 365 Business Premium trial and an Azure free account
 - **Network simulation:** Cisco Packet Tracer
-
-[LinkedIn](https://www.linkedin.com/in/shristi-tuladhar) · [Email](mailto:shristi.tuladhar@outlook.com)
