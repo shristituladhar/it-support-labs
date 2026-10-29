@@ -1,6 +1,6 @@
 # Module 7: Backup, Endpoint Protection and Printing
 
-This module covers syllabus Modules 7–9 (Backup, Endpoint Protection, Printers) in one lab, using the Banksia Aged Care scenario. I set up each service, broke it the way it usually breaks at work, and fixed it.
+This module covers syllabus (Backup, Endpoint Protection, Printers) in one lab, using the Banksia Aged Care scenario. I set up each service, broke it the way it usually breaks at work, and fixed it.
 
 **Machines used**
 - **BANKSIA-DC01** (Windows Server 2025): print server, file server, Windows Server Backup
